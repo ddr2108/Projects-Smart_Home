@@ -3,6 +3,7 @@ var imagesLights = {};
 imagesLights[true]="images\\bulbs\\on.gif";
 imagesLights[false]="images\\bulbs\\off.gif";
 
+////////////////////////////////////////////////////////
 /********************************
 * lights
 * -------
@@ -23,10 +24,7 @@ function lights(id, name, powered){
 	this.image = new Image();
 	
 	//preload images for this object
-	preloadLights(this);
-	
-	//Set up the button
-	setUpImageLights(this);
+	preloadLights(this);	
 }
 
 /********************************

@@ -1,5 +1,8 @@
+var name = "Lights";	//name object
+
+////////////////////////////////////////////////////////
 /********************************
-* lights
+* lightsController
 * -------
 * set up an object to represent
 * a light
@@ -11,11 +14,16 @@
 *	powered - state of light
 *	number - number of elements
 ********************************/
-function lights(id, name, powered, number){
-	//set up parameters for this object
-	this.id = id;	
-	this.name = name;
+function lightsController(id, name, powered, number){
+	//set up parameters each light in an array
+	var i = 0;
+	this.lights = new Array();
+	for (i = 0; i<number; i++){
+		this.lights[i] = new lights(id[i], name[i], powered[i]);
+	}
+	//Save important parameters
 	this.number = number;
+	//Set up image parameter for controller
 	this.image = new Image();
 	
 	//set up images
@@ -38,13 +46,13 @@ function setUpImageLightsController(obj){
 	document.body.appendChild(div);
 
 	//add image for this light
-	obj.image.src = "images\\bulbs\\on.gif";
-	obj.image.onclick = function(){changePoweredLights(obj);};
+	obj.image.src = imagesLights[true];
+	obj.image.onclick = function(){setUpLights(obj);};
 	document.getElementById(obj.id).appendChild(obj.image);
 	
 	//add title to image
 	var p = document.createElement("p");
-	p.innerHTML = obj.name;
+	p.innerHTML = name;
 	document.getElementById(obj.id).appendChild(p);
 }
 
@@ -60,6 +68,13 @@ function setUpImageLightsController(obj){
 function setUpLights(obj){
 	//clear all of the screen
 	document.body.innerHTML = "";
+	
+	//Set up the actual lights
+	var i = 0;
+	for(i =0; i<obj.number; i++){
+		setUpImageLights(obj.lights[i]);
+	}
+
 }
 
 

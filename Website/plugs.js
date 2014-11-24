@@ -24,9 +24,6 @@ function plugs(id, name, powered){
 	
 	//preload images for this object
 	preloadPlugs(this);
-	
-	//Set up the button
-	setUpImagePlugs(this);
 }
 
 /********************************
