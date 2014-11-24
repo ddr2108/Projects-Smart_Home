@@ -1,4 +1,4 @@
-var name = "Lights";	//name object
+var nameLightsController = "Lights";	//name object
 
 ////////////////////////////////////////////////////////
 /********************************
@@ -52,7 +52,7 @@ function setUpImageLightsController(obj){
 	
 	//add title to image
 	var p = document.createElement("p");
-	p.innerHTML = name;
+	p.innerHTML = nameLightsController;
 	document.getElementById(obj.id).appendChild(p);
 }
 
@@ -74,6 +74,8 @@ function setUpLights(obj){
 	for(i =0; i<obj.number; i++){
 		setUpImageLights(obj.lights[i]);
 	}
+	
+	//set up back button
 
 }
 

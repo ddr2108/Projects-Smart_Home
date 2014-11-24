@@ -58,12 +58,14 @@ function setUpImagePlugs(obj){
 
 	//add image for this plug
 	obj.image.src = imagesPlugs[obj.powered];
+	obj.image.id = "image";
 	obj.image.onclick = function(){changePoweredPlugs(obj);};
 	document.getElementById(obj.id).appendChild(obj.image);
 	
 	//add title to image
 	var p = document.createElement("p");
 	p.innerHTML = obj.name;
+	p.id = "title";
 	document.getElementById(obj.id).appendChild(p);
 }
 

@@ -59,12 +59,14 @@ function setUpImageLights(obj){
 
 	//add image for this light
 	obj.image.src = imagesLights[obj.powered];
+	obj.image.id = "image";
 	obj.image.onclick = function(){changePoweredLights(obj);};
 	document.getElementById(obj.id).appendChild(obj.image);
 	
 	//add title to image
 	var p = document.createElement("p");
 	p.innerHTML = obj.name;
+	p.id = "title";
 	document.getElementById(obj.id).appendChild(p);
 }
 

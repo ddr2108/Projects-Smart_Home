@@ -11,5 +11,5 @@ function main(){
 	var name = ['kitchen', 'family room', 'laundary room'];
 	var powered = [false, true, true];
 
-	var plug1;
+	var plug1 = new plugsController(id, name, powered, 3);;
 }
