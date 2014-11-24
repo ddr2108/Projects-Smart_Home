@@ -12,17 +12,14 @@ var namePlugsController = "Plugs";	//name object
 *	id - unique ID for light
 *	name - name of light
 *	powered - state of light
-*	number - number of elements
 ********************************/
 function plugsController(id, name, powered, number){
 	//set up parameters each light in an array
 	var i = 0;
 	this.plugs = new Array();
-	for (i = 0; i<number; i++){
+	for (i = 0; i<id.length; i++){
 		this.plugs[i] = new plugs(id[i], name[i], powered[i]);
 	}
-	//Save important parameters
-	this.number = number;
 	//Set up image parameter for controller
 	this.image = new Image();
 	
@@ -71,11 +68,12 @@ function setUpPlugs(obj){
 	
 	//Set up the actual plugs
 	var i = 0;
-	for(i =0; i<obj.number; i++){
+	for(i =0; i<obj.plugs.length; i++){
 		setUpImagePlugs(obj.plugs[i]);
 	}
 	
 	//set up back button
+	setUpImageBack(back);
 
 }
 

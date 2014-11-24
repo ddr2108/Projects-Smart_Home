@@ -1,6 +1,6 @@
 //back button
-var back = new Image();
 var imageBack = "images\\navigation\\back.png";
+/////////////////////////////////////////////////////
 
 /********************************
 * back
@@ -37,9 +37,9 @@ function setUpImageBack(obj){
 	document.body.appendChild(div);
 
 	//add image for this light
-	obj.image.src = imagesLights[obj.powered];
+	obj.image.src = imageBack;
 	obj.image.id = "image";
-	obj.image.onclick = function(){changePoweredLights(obj);};
+	obj.image.onclick = function(){goHome(obj);};
 	document.getElementById(obj.id).appendChild(obj.image);
 	
 	//add title to image
@@ -48,3 +48,19 @@ function setUpImageBack(obj){
 	p.id = "title";
 	document.getElementById(obj.id).appendChild(p);
 }
+
+/********************************
+* goHome
+* -------
+* Go to home screen
+*
+*
+* params:
+*	obj - object modified
+********************************/
+function goHome(obj){
+	//display home controllers
+	displayControllers()
+}
+
+var back = new back('back', 'Back');

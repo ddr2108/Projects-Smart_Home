@@ -12,22 +12,16 @@ var nameLightsController = "Lights";	//name object
 *	id - unique ID for light
 *	name - name of light
 *	powered - state of light
-*	number - number of elements
 ********************************/
-function lightsController(id, name, powered, number){
+function lightsController(id, name, powered){
 	//set up parameters each light in an array
 	var i = 0;
 	this.lights = new Array();
-	for (i = 0; i<number; i++){
+	for (i = 0; i<id.length; i++){
 		this.lights[i] = new lights(id[i], name[i], powered[i]);
 	}
-	//Save important parameters
-	this.number = number;
 	//Set up image parameter for controller
 	this.image = new Image();
-	
-	//set up images
-	setUpImageLightsController(this);
 }
 
 /********************************
@@ -71,12 +65,12 @@ function setUpLights(obj){
 	
 	//Set up the actual lights
 	var i = 0;
-	for(i =0; i<obj.number; i++){
+	for(i =0; i<obj.lights.length; i++){
 		setUpImageLights(obj.lights[i]);
 	}
 	
 	//set up back button
-
+	setUpImageBack(back);
 }
 
 
