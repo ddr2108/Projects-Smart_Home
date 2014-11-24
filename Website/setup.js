@@ -55,4 +55,7 @@ function displayControllers(){
 	if (controllerAvail['plug']){
 		setUpImagePlugsController(controller['plug']);
 	}
+	
+	//set up logout
+	setUpImageLogout(logout);
 }

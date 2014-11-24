@@ -8,6 +8,9 @@
 *	none
 ********************************/
 function main(){
+	//reset everything
+	reset();
+
 	//create form
 	var form = document.createElement("form");
 	form.setAttribute('method',"get");
@@ -47,7 +50,8 @@ function main(){
 *	none
 ********************************/
 function checkLogin(){
-		document.body.innerHTML = "";
+	//clear screen
+	document.body.innerHTML = "";
 
 	//begin setup for user
 	beginSetup();
@@ -63,7 +67,25 @@ function checkLogin(){
 *	none
 ********************************/
 function beginSetup(){
-
 	//set up the page
 	setup();
+}
+
+/********************************
+* reset
+* -------
+* resets screen and settings
+*
+*
+* params:
+*	none
+********************************/
+function reset(){
+	//clear screen
+	document.body.innerHTML = "";
+
+	//restet variables
+	controller = [];
+	controllerAvail = [];
+
 }

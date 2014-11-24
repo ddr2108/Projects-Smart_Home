@@ -20,11 +20,9 @@ function plugsController(id, name, powered, number){
 	for (i = 0; i<id.length; i++){
 		this.plugs[i] = new plugs(id[i], name[i], powered[i]);
 	}
+	
 	//Set up image parameter for controller
 	this.image = new Image();
-	
-	//set up images
-	setUpImagePlugsController(this);
 }
 
 /********************************

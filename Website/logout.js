@@ -3,10 +3,10 @@ var imageLogout = "images\\navigation\\back.png";
 /////////////////////////////////////////////////////
 
 /********************************
-* back
+* logout
 * -------
 * set up an object to represent
-* a light
+* logout
 *
 *
 * params:
@@ -14,7 +14,7 @@ var imageLogout = "images\\navigation\\back.png";
 *	name - name of light
 *	powered - state of light
 ********************************/
-function back(id, name){
+function logout(id, name){
 	//set up parameters for this object
 	this.id = id;	
 	this.name = name;
@@ -22,15 +22,15 @@ function back(id, name){
 }
 
 /********************************
-* setUpImageBack
+* setUpImageLogout
 * -------
-* Sets up image on screen for going back
+* Sets up image on screen for going logout
 *
 *
 * params:
 *	obj - object modified
 ********************************/
-function setUpImageBack(obj){
+function setUpImageLogout(obj){
 	//create a div to hold image
 	var div = document.createElement("div");
 	div.id = obj.id;
@@ -39,7 +39,7 @@ function setUpImageBack(obj){
 	//add image for this light
 	obj.image.src = imageBack;
 	obj.image.id = "image";
-	obj.image.onclick = function(){goHome(obj);};
+	obj.image.onclick = function(){goLogin(obj);};
 	document.getElementById(obj.id).appendChild(obj.image);
 	
 	//add title to image
@@ -50,17 +50,17 @@ function setUpImageBack(obj){
 }
 
 /********************************
-* goHome
+* goLogin
 * -------
-* Go to home screen
+* Go to login screen
 *
 *
 * params:
 *	obj - object modified
 ********************************/
-function goHome(obj){
+function goLogin(obj){
 	//display home controllers
-	displayControllers()
+	main();
 }
 
-var back = new back('back', 'Back');
+var logout = new logout('logout', 'Log out');
