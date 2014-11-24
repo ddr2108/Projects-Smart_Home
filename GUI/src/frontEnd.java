@@ -31,7 +31,6 @@ public class frontEnd extends JFrame{
 	
 	void buttonSetUp(){
 		JButton button1 = new PowerButton("Turn Light 1");
-
 		add(button1);
 
 	}
