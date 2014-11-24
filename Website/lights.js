@@ -1,7 +1,7 @@
 // set image list
-var images = {};
-images[true]="images\\bulb\\on.gif";
-images[false]="images\\bulb\\off.gif";
+var imagesLights = {};
+imagesLights[true]="images\\bulbs\\on.gif";
+imagesLights[false]="images\\bulbs\\off.gif";
 
 /********************************
 * lights
@@ -23,49 +23,45 @@ function lights(id, name, powered){
 	this.image = new Image();
 	
 	//preload images for this object
-	preload();
+	preloadLights(this);
 	
 	//Set up the button
-	setUpImage(this);
+	setUpImageLights(this);
 }
 
 /********************************
-* preload
+* preloadLights
 * -------
 * preloads images that tell state
 *
 *
 * params:
-*	none
+*	obj - object modified
 ********************************/
-function preload(){
-	// create image object
-	imageObj = new Image();
-
+function preloadLights(obj){
 	// start preloading
-	imageObj.src=images[true];
-	imageObj.src=images[false];
+	obj.image.src=imagesLights[true];
+	obj.image.src=imagesLights[false];
 }
 
 /********************************
-* setUpImage
+* setUpImageLights
 * -------
 * Sets up image on screen
 *
 *
 * params:
-*	none
+*	obj - object modified
 ********************************/
-function setUpImage(obj){
+function setUpImageLights(obj){
 	//create a div to hold image
 	var div = document.createElement("div");
 	div.id = obj.id;
 	document.body.appendChild(div);
 
 	//add image for this light
-	obj.image.src = images[obj.powered];
-	obj.image.name = 'asd';
-	obj.image.onclick = function(){changePowered(obj);};
+	obj.image.src = imagesLights[obj.powered];
+	obj.image.onclick = function(){changePoweredLights(obj);};
 	document.getElementById(obj.id).appendChild(obj.image);
 	
 	//add title to image
@@ -75,31 +71,31 @@ function setUpImage(obj){
 }
 
 /********************************
-* changeImage
+* changeImageLights
 * -------
 * Change the image displayed
 *
 *
 * params:
-*	none
+*	obj - object modified
 ********************************/
-function changeImage(obj){
-	obj.image.src = images[obj.powered];
+function changeImageLights(obj){
+	obj.image.src = imagesLights[obj.powered];
 }
 
 /********************************
-* changePowered
+* changePoweredLights
 * -------
 * Changes the state of the light
 *
 *
 * params:
-*	none
+*	obj - object modified
 ********************************/
-function changePowered(obj){
+function changePoweredLights(obj){
 	//change the state stored
 	obj.powered = !obj.powered;
 	
 	//change the image displayed
-	changeImage(obj);
+	changeImageLights(obj);
 }
