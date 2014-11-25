@@ -12,13 +12,15 @@ var namePlugsController = "Plugs";	//name object
 *	id - unique ID for light
 *	name - name of light
 *	state - state of light
+*	value1 - wildcard
+*	value2 - wildcard
 ********************************/
-function plugsController(device, name, state, number){
+function plugsController(device, name, state, value1, value2){
 	//set up parameters each light in an array
 	var i = 0;
 	this.plugs = new Array();
 	for (i = 0; i<device.length; i++){
-		this.plugs[i] = new plugs(device[i], name[i], state[i]);
+		this.plugs[i] = new plugs(device[i], name[i], state[i], value1[i], value2[i]);
 	}
 	//Set up image parameter for controller
 	this.image = new Image();

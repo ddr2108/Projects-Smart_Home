@@ -117,7 +117,7 @@ function initializeControllers(deviceArray, nameArray, stateArray, typeArray, va
 	}
 	//if there is a light
 	if (device.length>0){
-		var lights = new lightsController(device, name, state, device.length);
+		var lights = new lightsController(device, name, state, value1, value2);
 		controller['lights'] = lights;
 		controllerAvail['lights'] = true;
 	}
@@ -138,7 +138,7 @@ function initializeControllers(deviceArray, nameArray, stateArray, typeArray, va
 	}
 	//if there is a light
 	if (device.length>0){
-		var plugs = new plugsController(device, name, state, device.length);
+		var plugs = new plugsController(device, name, state, value1, value2);
 		controller['plugs'] = plugs;
 		controllerAvail['plugs'] = true;
 	}

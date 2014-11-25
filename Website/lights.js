@@ -15,12 +15,16 @@ imagesLights[false]="images\\bulbs\\off.gif";
 *	device - unique ID for light
 *	name - name of light
 *	state - state of light
+*	value1 - wildcard
+*	value2 - wildcard
 ********************************/
-function lights(device, name, state){
+function lights(device, name, state, value1, value2){
 	//set up parameters for this object
 	this.device = device;	
 	this.name = name;
-	this.state = state>0;	
+	this.state = state>0;		
+	this.value1 = value1;
+	this.value2 = value2;
 	this.image = new Image();
 	
 	//preload images for this object
@@ -93,9 +97,74 @@ function changeImageLights(obj){
 *	obj - object modified
 ********************************/
 function changePoweredLights(obj){
+	//store old values
+	oldState = obj.state;
+	oldValue1 = obj.value1;
+	oldValue2 = obj.value2;
+	
 	//change the state stored
 	obj.state = !obj.state;
 	
 	//change the image displayed
-	changeImageLights(obj);
+	changeServerLights(obj);
+}
+
+/********************************
+* checkSucessLights
+* -------
+* Changes success of db action
+*
+*
+* params:
+*	obj - object modified
+*	response - response from server
+********************************/
+function checkSucessLights(obj, response){
+	if (response.responseText){
+		changeImageLights(obj);
+	}else if (response.readyState === 4){
+		obj.state = oldState;
+		obj.value1 = oldValue1;
+		obj.value2 = oldValue2;
+		alert("Error Communicating with server")
+	}
+}
+
+/********************************
+* changeServerLights
+* -------
+* Changes the info on db
+*
+*
+* params:
+*	obj - object modified
+********************************/
+function changeServerLights(obj){
+	var url;		//url for http request
+	var xmlhttp;	//for ajax request
+
+	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	}
+	
+	//on finish
+	xmlhttp.onreadystatechange=function(){
+	  checkSucessLights(obj, xmlhttp);
+	}
+  
+	//put state in format for server
+	var state=0;
+	if (obj.state){
+		state = 1;
+	}
+
+	//send request
+	var components = ['?','device=', obj.device, '&','state=',state,'&','value1=',obj.value1,'&','value2=',obj.value2];
+	var urlGet = components.join("");
+	url = changeURL.concat(urlGet);
+
+	//create and send request
+	xmlhttp.open("GET",url,true);
+	xmlhttp.send(null);
+
 }

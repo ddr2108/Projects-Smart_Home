@@ -7,19 +7,23 @@ imagesPlugs[false]="images\\plugs\\off.gif";
 * plugs
 * -------
 * set up an object to represent
-* a light
+* a plug
 *
 *
 * params:
-*	device - unique ID for light
-*	name - name of light
-*	state - state of light
+*	device - unique ID for plug
+*	name - name of plug
+*	state - state of plug
+*	value1 - wildcard
+*	value2 - wildcard
 ********************************/
-function plugs(device, name, state){
+function plugs(device, name, state, value1, value2){
 	//set up parameters for this object
 	this.device = device;	
 	this.name = name;
 	this.state = state>0;	
+	this.value1 = value1;
+	this.value2 = value2;
 	this.image = new Image();
 	
 	//preload images for this object
@@ -85,16 +89,81 @@ function changeImagePlugs(obj){
 /********************************
 * changePoweredPlugs
 * -------
-* Changes the state of the light
+* Changes the state of the plug
 *
 *
 * params:
 *	obj - object modified
 ********************************/
 function changePoweredPlugs(obj){
+	//store old values
+	oldState = obj.state;
+	oldValue1 = obj.value1;
+	oldValue2 = obj.value2;
+	
 	//change the state stored
 	obj.state = !obj.state;
 	
 	//change the image displayed
-	changeImagePlugs(obj);
+	changeServerPlugs(obj);
+}
+
+/********************************
+* checkSucessPlugs
+* -------
+* Changes success of db action
+*
+*
+* params:
+*	obj - object modified
+*	response - response from server
+********************************/
+function checkSucessPlugs(obj, response){
+	if (response.responseText){
+		changeImagePlugs(obj);
+	}else if (response.readyState === 4){
+		obj.state = oldState;
+		obj.value1 = oldValue1;
+		obj.value2 = oldValue2;
+		alert("Error Communicating with server")
+	}
+}
+
+/********************************
+* changeServerPlugs
+* -------
+* Changes the info on db
+*
+*
+* params:
+*	obj - object modified
+********************************/
+function changeServerPlugs(obj){
+	var url;		//url for http request
+	var xmlhttp;	//for ajax request
+
+	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	}
+	
+	//on finish
+	xmlhttp.onreadystatechange=function(){
+	  checkSucessPlugs(obj, xmlhttp);
+	}
+  
+	//put state in format for server
+	var state=0;
+	if (obj.state){
+		state = 1;
+	}
+
+	//send request
+	var components = ['?','device=', obj.device, '&','state=',state,'&','value1=',obj.value1,'&','value2=',obj.value2];
+	var urlGet = components.join("");
+	url = changeURL.concat(urlGet);
+
+	//create and send request
+	xmlhttp.open("GET",url,true);
+	xmlhttp.send(null);
+
 }

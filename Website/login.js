@@ -89,6 +89,21 @@ function login(response){
 	
 		//begin setup for user
 		beginSetup(response);
+	} else{
+		//login failed warning
+		if (!document.getElementById("warningDiv")){
+			//create a div to hold warning
+			var div = document.createElement("div");
+			div.id = "warningDiv";
+			document.body.appendChild(div);
+
+			//add title to image
+			var p = document.createElement("p");
+			p.innerHTML = "Login Failed";
+			p.id = "warning";
+			document.getElementById("warningDiv").appendChild(p);
+		}
+
 	}
 }
 
