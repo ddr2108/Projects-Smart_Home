@@ -12,15 +12,15 @@ imagesLights[false]="images\\bulbs\\off.gif";
 *
 *
 * params:
-*	id - unique ID for light
+*	device - unique ID for light
 *	name - name of light
-*	powered - state of light
+*	state - state of light
 ********************************/
-function lights(id, name, powered){
+function lights(device, name, state){
 	//set up parameters for this object
-	this.id = id;	
+	this.device = device;	
 	this.name = name;
-	this.powered = powered;	
+	this.state = state>0;	
 	this.image = new Image();
 	
 	//preload images for this object
@@ -54,20 +54,20 @@ function preloadLights(obj){
 function setUpImageLights(obj){
 	//create a div to hold image
 	var div = document.createElement("div");
-	div.id = obj.id;
+	div.id = obj.device;
 	document.body.appendChild(div);
 
 	//add image for this light
-	obj.image.src = imagesLights[obj.powered];
+	obj.image.src = imagesLights[obj.state];
 	obj.image.id = "image";
 	obj.image.onclick = function(){changePoweredLights(obj);};
-	document.getElementById(obj.id).appendChild(obj.image);
+	document.getElementById(obj.device).appendChild(obj.image);
 	
 	//add title to image
 	var p = document.createElement("p");
 	p.innerHTML = obj.name;
 	p.id = "title";
-	document.getElementById(obj.id).appendChild(p);
+	document.getElementById(obj.device).appendChild(p);
 }
 
 /********************************
@@ -80,7 +80,7 @@ function setUpImageLights(obj){
 *	obj - object modified
 ********************************/
 function changeImageLights(obj){
-	obj.image.src = imagesLights[obj.powered];
+	obj.image.src = imagesLights[obj.state];
 }
 
 /********************************
@@ -94,7 +94,7 @@ function changeImageLights(obj){
 ********************************/
 function changePoweredLights(obj){
 	//change the state stored
-	obj.powered = !obj.powered;
+	obj.state = !obj.state;
 	
 	//change the image displayed
 	changeImageLights(obj);

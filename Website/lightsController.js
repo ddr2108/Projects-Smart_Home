@@ -9,16 +9,16 @@ var nameLightsController = "Lights";	//name object
 *
 *
 * params:
-*	id - unique ID for light
+*	device - unique ID for light
 *	name - name of light
-*	powered - state of light
+*	state - state of light
 ********************************/
-function lightsController(id, name, powered){
+function lightsController(device, name, state){
 	//set up parameters each light in an array
 	var i = 0;
 	this.lights = new Array();
-	for (i = 0; i<id.length; i++){
-		this.lights[i] = new lights(id[i], name[i], powered[i]);
+	for (i = 0; i<device.length; i++){
+		this.lights[i] = new lights(device[i], name[i], state[i]);
 	}
 	//Set up image parameter for controller
 	this.image = new Image();

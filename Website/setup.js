@@ -10,30 +10,150 @@ var controllerAvail = new Array();
 *
 *
 * params:
-*	none
+*	unit - unit id
 ********************************/
-function setup(){
-	//set up array with all the lights	
-	var id = [1, 2, 3];
-	var name = ['kitchen', 'family room', 'laundary room'];
-	var powered = [false, false, true];
-	var light1 = new lightsController(id, name, powered, 3);
+function setup(unit){
+	var url;		//url for http request
+	var xmlhttp;	//for ajax request
 
-	//set up array with all the plugs
-	var id = [4, 5, 6];
-	var name = ['kitchen', 'family room', 'laundary room'];
-	var powered = [false, true, true];
-	var plug1 = new plugsController(id, name, powered, 3);
+	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	}
 	
-	//Save controllers
-	controller['light'] = light1;
-	controller['plug'] = plug1;
-	controllerAvail['light'] = true;
-	controllerAvail['plug'] = true;
+	//on finish
+	xmlhttp.onreadystatechange=function(){
+	  processDevices(xmlhttp.responseText);
+	}
+  
+	var components = ['?','unit=', unit];
+	var urlGet = components.join("");
+	url = deviceURL.concat(urlGet);
+		
+	//create and send request
+	xmlhttp.open("GET",url,true);
+	xmlhttp.send(null);
+}
+
+/********************************
+* processDevices
+* -------
+* Processes Devices
+*
+*
+* params:
+*	response - response text
+********************************/
+function processDevices(response){
+	//parse the data
+	var deviceParameters = response.split(":");
+	
+	//Arrays to hold data
+	var deviceArray = new Array();
+	var nameArray = new Array();
+	var stateArray = new Array();
+	var typeArray = new Array();
+	var value1Array = new Array();
+	var value2Array = new Array();
+	
+	//go through received data
+	var i = 0;
+	for (i=0; i<deviceParameters.length-1; i=i+6){
+		deviceArray[i/6] = deviceParameters[i];
+		nameArray[i/6] = deviceParameters[i+1];
+		stateArray[i/6] = deviceParameters[i+2];
+		typeArray[i/6] = deviceParameters[i+3];
+		value1Array[i/6] = deviceParameters[i+4];
+		value2Array[i/6] = deviceParameters[i+5];
+	}
+	//initialize controllers
+	initializeControllers(deviceArray, nameArray, stateArray, typeArray, value1Array, value2Array);
+}
+
+/********************************
+* initializeControllers
+* -------
+* Displays controller page
+*
+*
+* params:
+*	deviceArray - device id
+*	nameArray - name
+*	stateArray - state
+*	typeArray - type of device
+*	value1Array - wildcard value 1
+*	value2Array - wildcard value 2
+********************************/
+function initializeControllers(deviceArray, nameArray, stateArray, typeArray, value1Array, value2Array){
+
+	//arrays to hold which index is for which device
+	var lightIndex = new Array();
+	var plugIndex = new Array();
+
+
+	//go through devices
+	var i = 0;
+	for (i = 0; i<typeArray.length; i++){
+		if (typeArray[i]=='light'){
+			lightIndex.push(i);
+		}else if (typeArray[i]=='plug'){
+			plugIndex.push(i);
+		}
+	}
+
+	//arrays to hold parameters
+	var device = new Array(); 
+	var name = new Array();
+	var state = new Array(); 
+	var value1 = new Array(); 
+	var value2 = new Array();
+	
+	//set up array with all the lights	
+	for (i = 0; i<lightIndex.length; i++){
+		device.push(deviceArray[lightIndex[i]]);
+		name.push(nameArray[lightIndex[i]]);
+		state.push(stateArray[lightIndex[i]]);
+		value1.push(value1Array[lightIndex[i]]);
+		value2.push(value2Array[lightIndex[i]]);
+	}
+	//if there is a light
+	if (device.length>0){
+		var lights = new lightsController(device, name, state, device.length);
+		controller['lights'] = lights;
+		controllerAvail['lights'] = true;
+	}
+	//Clear arrays
+	device = []; 
+	name = [];
+	state = []; 
+	value1 = []; 
+	value2 = [];	
+
+	//Set up array for plugs
+	for (i = 0; i<plugIndex.length; i++){
+		device.push(deviceArray[plugIndex[i]]);
+		name.push(nameArray[plugIndex[i]]);
+		state.push(stateArray[plugIndex[i]]);
+		value1.push(value1Array[plugIndex[i]]);
+		value2.push(value2Array[plugIndex[i]]);
+	}
+	//if there is a light
+	if (device.length>0){
+		var plugs = new plugsController(device, name, state, device.length);
+		controller['plugs'] = plugs;
+		controllerAvail['plugs'] = true;
+	}
+	//Clear arrays
+	device = []; 
+	name = [];
+	state = []; 
+	value1 = []; 
+	value2 = [];	
+	
 	
 	//Display controllers
 	displayControllers();
 }
+
 
 /********************************
 * displayControllers
@@ -49,11 +169,11 @@ function displayControllers(){
 	document.body.innerHTML = "";
 	
 	//Check which controllers are avaialable and call
-	if (controllerAvail['light']){
-		setUpImageLightsController(controller['light']);
+	if (controllerAvail['lights']){
+		setUpImageLightsController(controller['lights']);
 	}
-	if (controllerAvail['plug']){
-		setUpImagePlugsController(controller['plug']);
+	if (controllerAvail['plugs']){
+		setUpImagePlugsController(controller['plugs']);
 	}
 	
 	//set up logout
