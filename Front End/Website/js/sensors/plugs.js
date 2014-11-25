@@ -1,7 +1,7 @@
 // set image list
 var imagesPlugs = {};
-imagesPlugs[true]="images\\plugs\\on.gif";
-imagesPlugs[false]="images\\plugs\\off.gif";
+imagesPlugs[true]="images\\sensors\\plugs\\on.gif";
+imagesPlugs[false]="images\\sensors\\plugs\\off.gif";
 
 /********************************
 * plugs

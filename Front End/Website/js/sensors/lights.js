@@ -1,7 +1,7 @@
 // set image list
 var imagesLights = {};
-imagesLights[true]="images\\bulbs\\on.gif";
-imagesLights[false]="images\\bulbs\\off.gif";
+imagesLights[true]="images\\sensors\\bulbs\\on.gif";
+imagesLights[false]="images\\sensors\\bulbs\\off.gif";
 
 ////////////////////////////////////////////////////////
 /********************************
