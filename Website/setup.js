@@ -25,13 +25,15 @@ function setup(unit){
 	  processDevices(xmlhttp.responseText);
 	}
   
-	var components = ['?','unit=', unit];
-	var urlGet = components.join("");
-	url = deviceURL.concat(urlGet);
+	var components = ['unit=', unit];
+	var urlPost = components.join("");
 		
 	//create and send request
-	xmlhttp.open("GET",url,true);
-	xmlhttp.send(null);
+	xmlhttp.open("POST",deviceURL,true);
+	//Send the proper header information along with the request
+	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	//send request
+	xmlhttp.send(urlPost);
 }
 
 /********************************

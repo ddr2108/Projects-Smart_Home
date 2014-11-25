@@ -63,13 +63,15 @@ function checkLogin(form){
 	  login(xmlhttp.responseText);
 	}
   
-	var components = ['?','un=', form.username.value,'&','pw=',form.password.value];
-	var urlGet = components.join("");
-	url = loginURL.concat(urlGet);
+	var components = ['un=', form.username.value,'&','pw=',form.password.value];
+	var urlPost = components.join("");
 		
 	//create and send request
-	xmlhttp.open("GET",url,true);
-	xmlhttp.send(null);
+	xmlhttp.open("POST",loginURL,true);
+	//Send the proper header information along with the request
+	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	//send request
+	xmlhttp.send(urlPost);
 }
 
 /********************************

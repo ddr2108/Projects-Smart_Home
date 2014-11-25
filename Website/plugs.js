@@ -158,12 +158,13 @@ function changeServerPlugs(obj){
 	}
 
 	//send request
-	var components = ['?','device=', obj.device, '&','state=',state,'&','value1=',obj.value1,'&','value2=',obj.value2];
-	var urlGet = components.join("");
-	url = changeURL.concat(urlGet);
+	var components = ['device=', obj.device, '&','state=',state,'&','value1=',obj.value1,'&','value2=',obj.value2];
+	var urlPost = components.join("");
 
 	//create and send request
-	xmlhttp.open("GET",url,true);
-	xmlhttp.send(null);
-
+	xmlhttp.open("POST",changeURL,true);
+	//Send the proper header information along with the request
+	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	//send request
+	xmlhttp.send(urlPost);
 }
