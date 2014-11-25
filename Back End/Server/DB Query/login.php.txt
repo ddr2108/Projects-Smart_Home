@@ -1,0 +1,27 @@
+<?php
+header('Access-Control-Allow-Origin: *');  
+
+//get thdde info about the device
+$unDB = "deep";
+$pwDB = "siddhartha";
+$DB = "Smart_Home";
+
+//get data from request
+$un = $_POST['un'];
+$pw = $_POST['pw'];
+
+//Open connection with db
+$con=mysqli_connect("localhost",$unDB,$pwDB, "Smart_Home");
+if (mysqli_connect_errno()) {
+    die('Connect Error: ' . mysqli_connect_errno());
+}
+
+//Get device numbers
+$resultUnits = mysqli_query($con,"SELECT * FROM Users WHERE UN='$un' AND PW='$pw'");
+//go through and see if there is a unit
+while ($row = mysqli_fetch_array($resultUnits)){
+	//return unit number
+	echo $row['Unit'];
+}
+
+?>

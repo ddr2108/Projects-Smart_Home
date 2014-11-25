@@ -1,0 +1,39 @@
+<?php
+header('Access-Control-Allow-Origin: *');  
+
+//get thdde info about the device
+$unDB = "deep";
+$pwDB = "siddhartha";
+$DB = "Smart_Home";
+
+//Get info to change
+$device = $_POST['device'];
+$state = $_POST['state'];
+$value1 = $_POST['value1'];
+$value2 = $_POST['value2'];
+
+//Open connection with db
+$con=mysqli_connect("localhost",$unDB,$pwDB, "Smart_Home");
+if (mysqli_connect_errno()) {
+    die('Connect Error: ' . mysqli_connect_errno());
+}
+
+//Update the db
+if (isset($_POST['state'])){
+	$result = mysqli_query($con, "UPDATE Devices SET State='$state' WHERE Device='$device'");
+}
+if(isset($_POST['value1'])){
+	$result = mysqli_query($con, "UPDATE Devices SET Value1='$value1' WHERE Device='$device'");
+}
+if(isset($_POST['value2'])){
+	$result = mysqli_query($con, "UPDATE Devices SET Value2='$value2' WHERE Device='$device'");
+}
+
+//echo 1 if successful
+if ($result){
+	echo 1;
+}else{
+	echo 0;
+}
+
+?>
