@@ -90,7 +90,7 @@ function initializeControllers(deviceArray, nameArray, stateArray, typeArray, va
 	//arrays to hold which index is for which device
 	var lightIndex = new Array();
 	var plugIndex = new Array();
-
+	var tempsIndex = new Array();
 
 	//go through devices
 	var i = 0;
@@ -99,6 +99,8 @@ function initializeControllers(deviceArray, nameArray, stateArray, typeArray, va
 			lightIndex.push(i);
 		}else if (typeArray[i]=='plug'){
 			plugIndex.push(i);
+		} else if(typeArray[i]=='temp'){
+			tempsIndex.push(i);
 		}
 	}
 
@@ -151,6 +153,26 @@ function initializeControllers(deviceArray, nameArray, stateArray, typeArray, va
 	value1 = []; 
 	value2 = [];	
 	
+	//Set up array for temps
+	for (i = 0; i<tempsIndex.length; i++){
+		device.push(deviceArray[tempsIndex[i]]);
+		name.push(nameArray[tempsIndex[i]]);
+		state.push(stateArray[tempsIndex[i]]);
+		value1.push(value1Array[tempsIndex[i]]);
+		value2.push(value2Array[tempsIndex[i]]);
+	}
+	//if there is a light
+	if (device.length>0){
+		var temps = new tempsController(device, name, state, value1, value2);
+		controller['temps'] = temps;
+		controllerAvail['temps'] = true;
+	}
+	//Clear arrays
+	device = []; 
+	name = [];
+	state = []; 
+	value1 = []; 
+	value2 = [];	
 	
 	//Display controllers
 	displayControllers();
@@ -177,7 +199,9 @@ function displayControllers(){
 	if (controllerAvail['plugs']){
 		setUpImagePlugsController(controller['plugs']);
 	}
-	
+	if (controllerAvail['temps']){
+		setUpImageTempsController(controller['temps']);
+	}
 	//set up logout
 	setUpImageLogout(logout);
 }
