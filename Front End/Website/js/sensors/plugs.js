@@ -119,7 +119,7 @@ function changePoweredPlugs(obj){
 *	response - response from server
 ********************************/
 function checkSucessPlugs(obj, response){
-	if (response.responseText){
+	if (response.responseText && response.responseText!=0){
 		changeImagePlugs(obj);
 	}else if (response.readyState === 4){
 		obj.state = oldState;
@@ -158,7 +158,7 @@ function changeServerPlugs(obj){
 	}
 
 	//send request
-	var components = ['device=', obj.device, '&','state=',state,'&','value1=',obj.value1,'&','value2=',obj.value2];
+	var components = ['device=', obj.device, '&','state=',state,'&','value1=',obj.value1,'&','value2=',obj.value2, '&','type=',PLUG, '&','unit=', unitNum];
 	var urlPost = components.join("");
 
 	//create and send request

@@ -95,11 +95,11 @@ function initializeControllers(deviceArray, nameArray, stateArray, typeArray, va
 	//go through devices
 	var i = 0;
 	for (i = 0; i<typeArray.length; i++){
-		if (typeArray[i]=='light'){
+		if (typeArray[i]==LIGHT){
 			lightIndex.push(i);
-		}else if (typeArray[i]=='plug'){
+		}else if (typeArray[i]==PLUG){
 			plugIndex.push(i);
-		} else if(typeArray[i]=='temp'){
+		} else if(typeArray[i]==TEMP){
 			tempsIndex.push(i);
 		}
 	}
@@ -122,8 +122,8 @@ function initializeControllers(deviceArray, nameArray, stateArray, typeArray, va
 	//if there is a light
 	if (device.length>0){
 		var lights = new lightsController(device, name, state, value1, value2);
-		controller['lights'] = lights;
-		controllerAvail['lights'] = true;
+		controller[LIGHT] = lights;
+		controllerAvail[LIGHT] = true;
 	}
 	//Clear arrays
 	device = []; 
@@ -143,8 +143,8 @@ function initializeControllers(deviceArray, nameArray, stateArray, typeArray, va
 	//if there is a light
 	if (device.length>0){
 		var plugs = new plugsController(device, name, state, value1, value2);
-		controller['plugs'] = plugs;
-		controllerAvail['plugs'] = true;
+		controller[PLUG] = plugs;
+		controllerAvail[PLUG] = true;
 	}
 	//Clear arrays
 	device = []; 
@@ -164,8 +164,8 @@ function initializeControllers(deviceArray, nameArray, stateArray, typeArray, va
 	//if there is a light
 	if (device.length>0){
 		var temps = new tempsController(device, name, state, value1, value2);
-		controller['temps'] = temps;
-		controllerAvail['temps'] = true;
+		controller[TEMP] = temps;
+		controllerAvail[TEMP] = true;
 	}
 	//Clear arrays
 	device = []; 
@@ -193,14 +193,14 @@ function displayControllers(){
 	document.body.innerHTML = "";
 	
 	//Check which controllers are avaialable and call
-	if (controllerAvail['lights']){
-		setUpImageLightsController(controller['lights']);
+	if (controllerAvail[LIGHT]){
+		setUpImageLightsController(controller[LIGHT]);
 	}
-	if (controllerAvail['plugs']){
-		setUpImagePlugsController(controller['plugs']);
+	if (controllerAvail[PLUG]){
+		setUpImagePlugsController(controller[PLUG]);
 	}
-	if (controllerAvail['temps']){
-		setUpImageTempsController(controller['temps']);
+	if (controllerAvail[TEMP]){
+		setUpImageTempsController(controller[TEMP]);
 	}
 	//set up logout
 	setUpImageLogout(logout);

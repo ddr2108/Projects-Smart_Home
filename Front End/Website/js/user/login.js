@@ -121,6 +121,9 @@ function login(response){
 function beginSetup(unit){
 	//set up the page
 	setup(unit);
+	
+	//save unit number
+	unitNum=unit;
 }
 
 /********************************

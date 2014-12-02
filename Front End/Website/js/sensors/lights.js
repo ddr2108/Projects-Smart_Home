@@ -120,7 +120,7 @@ function changePoweredLights(obj){
 *	response - response from server
 ********************************/
 function checkSucessLights(obj, response){
-	if (response.responseText){
+	if (response.responseText && response.responseText!=0){
 		changeImageLights(obj);
 	}else if (response.readyState === 4){
 		obj.state = oldState;
@@ -159,7 +159,7 @@ function changeServerLights(obj){
 	}
 
 	//send request
-	var components = ['device=', obj.device, '&','state=',state,'&','value1=',obj.value1,'&','value2=',obj.value2];
+	var components = ['device=', obj.device, '&','state=',state,'&','value1=',obj.value1,'&','value2=',obj.value2, '&','type=',LIGHT, '&','unit=', unitNum];
 	var urlPost = components.join("");
 
 	//create and send request

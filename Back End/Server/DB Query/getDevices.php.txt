@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin: *');  
 
 //DB parameters
+$host = "localhost";
 $unDB = "deep";
 $pwDB = "siddhartha";
 $DB = "Smart_Home";
@@ -10,41 +11,26 @@ $DB = "Smart_Home";
 $unit = $_POST['unit'];
 
 //Open connection with db
-$con=mysqli_connect("localhost",$unDB,$pwDB, "Smart_Home");
+$con=mysqli_connect($host,$unDB,$pwDB,$DB);
 if (mysqli_connect_errno()) {
     die('Connect Error: ' . mysqli_connect_errno());
 }
 		
-//Get device numbers
-$resultDevices = mysqli_query($con,"SELECT * FROM Units WHERE Unit='$unit'");
-//Go through all the devices numbers		
-while($row = mysqli_fetch_array($resultDevices)) {
-
-	//Calcualte devices for this unit
-	$device = $row['Device'];
+//go through all devices with this unit
+$resultInfo = mysqli_query($con,"SELECT * FROM Devices WHERE UNIT='$unit'");
+//Go through all the devices info
+while($row = mysqli_fetch_array($resultInfo)) {
 	
-	$resultInfo = mysqli_query($con,"SELECT * FROM Devices WHERE Device='$device'");
-	//Go through all the devices info
-	while($row = mysqli_fetch_array($resultInfo)) {
-	
-		//pull out info
-		$id = $row['Device'];
-		$name = $row['Name'];
-		$state = $row['State'];
-		$type = $row['Type'];
-		$value1 = $row['Value1'];
-		$value2 = $row['Value2'];
+	//pull out info
+	$id = $row['Device'];
+	$name = $row['Name'];
+	$state = $row['State'];
+	$type = $row['Type'];
+	$value1 = $row['Value1'];
+	$value2 = $row['Value2'];
 
-		//print out the info
-		echo $id . ":" . $name . ":" . $state . ":" . $type . ":" . $value1 . ":" . $value2;
-	}
-
-
-	//print out terminating marker
-	echo ":";
-
-
+	//print out the info
+	echo $id . ":" . $name . ":" . $state . ":" . $type . ":" . $value1 . ":" . $value2 . ":";
 }
-
 
 ?>

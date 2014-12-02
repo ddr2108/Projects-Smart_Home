@@ -7,9 +7,8 @@ $unDB = "deep";
 $pwDB = "siddhartha";
 $DB = "Smart_Home";
 
-//get data from request
-$un = $_POST['un'];
-$pw = $_POST['pw'];
+//Get info to change
+$unit = $_POST['unit'];
 
 //Open connection with db
 $con=mysqli_connect($host,$unDB,$pwDB, $DB);
@@ -17,12 +16,7 @@ if (mysqli_connect_errno()) {
     die('Connect Error: ' . mysqli_connect_errno());
 }
 
-//Get device numbers
-$resultUnits = mysqli_query($con,"SELECT * FROM Users WHERE UN='$un' AND PW='$pw'");
-//go through and see if there is a unit
-while ($row = mysqli_fetch_array($resultUnits)){
-	//return unit number
-	echo $row['Unit'];
-}
+//add to db
+mysqli_query($con, "INSERT INTO Updates(Name,Unit,Device, State, Type, Value1, Value2) Values('$name', '$unit', '$device','$state','$type','$value1','$value2')");
 
 ?>
