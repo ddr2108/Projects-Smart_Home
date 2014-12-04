@@ -25,6 +25,7 @@ function plugs(device, name, state, value1, value2){
 	this.value1 = value1;
 	this.value2 = value2;
 	this.image = new Image();
+	this.pending = 0;
 	
 	//preload images for this object
 	preloadPlugs(this);
@@ -96,16 +97,24 @@ function changeImagePlugs(obj){
 *	obj - object modified
 ********************************/
 function changePoweredPlugs(obj){
+	
+	//only do if not another request pending
+	if (obj.pending==1){
+		return;
+	}
+	obj.pending = 1;
+
 	//store old values
-	oldState = obj.state;
-	oldValue1 = obj.value1;
-	oldValue2 = obj.value2;
+	obj.oldState = obj.state;
+	obj.oldValue1 = obj.value1;
+	obj.oldValue2 = obj.value2;
 	
 	//change the state stored
 	obj.state = !obj.state;
 	
 	//change the image displayed
 	changeServerPlugs(obj);
+	
 }
 
 /********************************
@@ -120,11 +129,13 @@ function changePoweredPlugs(obj){
 ********************************/
 function checkSucessPlugs(obj, response){
 	if (response.responseText && response.responseText!=0){
+		obj.pending = 0;
 		changeImagePlugs(obj);
 	}else if (response.readyState === 4){
-		obj.state = oldState;
-		obj.value1 = oldValue1;
-		obj.value2 = oldValue2;
+		obj.pending = 0;
+		obj.state = obj.oldState;
+		obj.value1 = obj.oldValue1;
+		obj.value2 = obj.oldValue2;
 		alert("Error Communicating with server")
 	}
 }
@@ -142,6 +153,7 @@ function changeServerPlugs(obj){
 	var url;		//url for http request
 	var xmlhttp;	//for ajax request
 
+	
 	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
 		xmlhttp=new XMLHttpRequest();
 	}

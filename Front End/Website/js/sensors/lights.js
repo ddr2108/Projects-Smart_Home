@@ -26,6 +26,7 @@ function lights(device, name, state, value1, value2){
 	this.value1 = value1;
 	this.value2 = value2;
 	this.image = new Image();
+	this.pending = 0;
 	
 	//preload images for this object
 	preloadLights(this);	
@@ -97,10 +98,17 @@ function changeImageLights(obj){
 *	obj - object modified
 ********************************/
 function changePoweredLights(obj){
+
+	//only do if not another request pending
+	if (obj.pending==1){
+		return;
+	}
+	obj.pending = 1;
+
 	//store old values
-	oldState = obj.state;
-	oldValue1 = obj.value1;
-	oldValue2 = obj.value2;
+	obj.oldState = obj.state;
+	obj.oldValue1 = obj.value1;
+	obj.oldValue2 = obj.value2;
 	
 	//change the state stored
 	obj.state = !obj.state;
@@ -121,11 +129,13 @@ function changePoweredLights(obj){
 ********************************/
 function checkSucessLights(obj, response){
 	if (response.responseText && response.responseText!=0){
+		obj.pending = 0;
 		changeImageLights(obj);
 	}else if (response.readyState === 4){
-		obj.state = oldState;
-		obj.value1 = oldValue1;
-		obj.value2 = oldValue2;
+		obj.pending = 0;
+		obj.state = obj.oldState;
+		obj.value1 = obj.oldValue1;
+		obj.value2 = obj.oldValue2;
 		alert("Error Communicating with server")
 	}
 }
@@ -143,6 +153,11 @@ function changeServerLights(obj){
 	var url;		//url for http request
 	var xmlhttp;	//for ajax request
 
+	//only do if no pending requests
+	if (obj.pending==1)
+		return;
+	obj.pending = 1;
+	
 	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
 		xmlhttp=new XMLHttpRequest();
 	}

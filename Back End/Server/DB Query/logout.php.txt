@@ -16,8 +16,13 @@ if (mysqli_connect_errno()) {
     die('Connect Error: ' . mysqli_connect_errno());
 }
 
-//Get device numbers
+//Delete data
 //mysqli_query($con,"DELETE FROM Devices WHERE Unit='$unit'");
+
+//Delete request
+mysqli_query($con,"DELETE FROM Requests WHERE Unit='$unit'");
+
+//Set inactive
 mysqli_query($con, "UPDATE Users SET Active='0' WHERE Unit='$unit'");
 
 ?>

@@ -21,6 +21,7 @@ function temps(device, name, state, value1, value2){
 	this.state = state;	
 	this.value1 = value1;
 	this.value2 = value2;
+	this.pending = 0;
 }
 
 /********************************
