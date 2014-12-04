@@ -32,9 +32,9 @@ for ($i=1; $i<=100; $i++){
     
     //if there is a match
     if ($result->num_rows){
-	//mark updated and return
-	echo '1';
-	return;
+		//mark updated and return
+		echo '1';
+		return;
     }
 }
 

@@ -162,7 +162,7 @@ function changeServerPlugs(obj){
 	var urlPost = components.join("");
 
 	//create and send request
-	xmlhttp.open("POST",changeURL,true);
+	xmlhttp.open("POST",updateDeviceURL,true);
 	//Send the proper header information along with the request
 	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	//send request

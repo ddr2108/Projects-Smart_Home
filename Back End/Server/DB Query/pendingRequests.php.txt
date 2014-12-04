@@ -1,0 +1,29 @@
+<?php
+header('Access-Control-Allow-Origin: *');  
+
+//get thdde info about the device
+$host = "localhost";
+$unDB = "deep";
+$pwDB = "siddhartha";
+$DB = "Smart_Home";
+
+//get data from request
+$unit = $_POST['unit'];
+
+//Open connection with db
+$con=mysqli_connect($host,$unDB,$pwDB, $DB);
+if (mysqli_connect_errno()) {
+    die('Connect Error: ' . mysqli_connect_errno());
+}
+
+//Get device numbers
+$result = mysqli_query($con,"SELECT * FROM Requests WHERE Unit='$unit'");
+
+if($result->num_rows>0){
+	echo '1';
+}else{
+	echo '0';
+}
+
+
+?>

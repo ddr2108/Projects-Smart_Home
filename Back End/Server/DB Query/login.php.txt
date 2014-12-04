@@ -21,8 +21,19 @@ if (mysqli_connect_errno()) {
 $resultUnits = mysqli_query($con,"SELECT * FROM Users WHERE UN='$un' AND PW='$pw'");
 //go through and see if there is a unit
 while ($row = mysqli_fetch_array($resultUnits)){
+	$unit = $row['Unit'];
 	//return unit number
-	echo $row['Unit'];
+	echo $unit;
 }
+
+//if there was a user 
+if ($resultUnits->num_rows>0){
+	//mark as logged in
+	mysqli_query($con, "UPDATE Users SET Active='1' WHERE UN='$un' AND PW='$pw'");
+}
+
+//add to db for setting request
+mysqli_query($con, "INSERT INTO Requests(Unit) Values('$unit')");
+
 
 ?>

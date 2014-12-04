@@ -59,8 +59,39 @@ function setUpImageLogout(obj){
 *	obj - object modified
 ********************************/
 function goLogin(obj){
+	//mark inactive on server
+	checkLogout();
+
 	//display home controllers
 	main();
+}
+
+/********************************
+* checkLogout
+* -------
+* Make sure server has logged out
+*
+*
+* params:
+*	none
+********************************/
+function checkLogout(){
+	var url;		//url for http request
+	var xmlhttp;	//for ajax request
+
+	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	}
+	
+	var components = ['unit=', unitNum];
+	var urlPost = components.join("");
+		
+	//create and send request
+	xmlhttp.open("POST",logoutURL,true);
+	//Send the proper header information along with the request
+	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	//send request
+	xmlhttp.send(urlPost);
 }
 
 var logout = new logout('logout', 'Log out');
