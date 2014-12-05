@@ -1,10 +1,24 @@
 <?php
+#Allows for checking if there is a update pending
+#for a particular unit
+#
+#parameters:
+#       unit - unit num
+#returns:
+#       list of updates with the device, state, type,
+#	value1, and value2 sepeataed by :
+
+
 header('Access-Control-Allow-Origin: *');  
 
-//get thdde info about the device
+#credentials file
+$credentialsDBFile = "../credentialsDB";
+$credentialsDB = explode("\n", file_get_contents($credentialsDBFile));
+
+//DB parameters
 $host = "localhost";
-$unDB = "deep";
-$pwDB = "siddhartha";
+$unDB = $credentialsDB[0];
+$pwDB = $credentialsDB[1];
 $DB = "Smart_Home";
 
 //get data from request

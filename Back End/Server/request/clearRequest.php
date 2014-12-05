@@ -1,10 +1,21 @@
 <?php
+#Allows for clearing requqest flag for unit
+#
+#parameters:
+#       unit - unit num
+#returns: none
+
+
 header('Access-Control-Allow-Origin: *');  
 
-//get thdde info about the device
+#credentials file
+$credentialsDBFile = "../credentialsDB";
+$credentialsDB = explode("\n", file_get_contents($credentialsDBFile));
+
+//DB parameters
 $host = "localhost";
-$unDB = "deep";
-$pwDB = "siddhartha";
+$unDB = $credentialsDB[0];
+$pwDB = $credentialsDB[1];
 $DB = "Smart_Home";
 
 //get data from request
@@ -16,13 +27,7 @@ if (mysqli_connect_errno()) {
     die('Connect Error: ' . mysqli_connect_errno());
 }
 
-//Delete data
-//mysqli_query($con,"DELETE FROM Devices WHERE Unit='$unit'");
-
-//Delete request
+//Clear request
 mysqli_query($con,"DELETE FROM Requests WHERE Unit='$unit'");
-
-//Set inactive
-mysqli_query($con, "UPDATE Users SET Active='0' WHERE Unit='$unit'");
 
 ?>

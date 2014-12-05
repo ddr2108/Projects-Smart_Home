@@ -1,10 +1,26 @@
 <?php
+#Sets up an update for a device from controller
+#
+#parameters:
+#       unit - unit num
+#	device - device num
+#	type - device type
+#	state - state
+#	value1 - value1
+#	value2 - value2
+#	name - name of dev
+#returns: none
+
 header('Access-Control-Allow-Origin: *');  
 
-//get thdde info about the device
+#credentials file
+$credentialsDBFile = "../credentialsDB";
+$credentialsDB = explode("\n", file_get_contents($credentialsDBFile));
+
+//DB parameters
 $host = "localhost";
-$unDB = "deep";
-$pwDB = "siddhartha";
+$unDB = $credentialsDB[0];
+$pwDB = $credentialsDB[1];
 $DB = "Smart_Home";
 
 //Get info to change
@@ -22,11 +38,11 @@ if (mysqli_connect_errno()) {
     die('Connect Error: ' . mysqli_connect_errno());
 }
 
-
+echo isset($_POST['name']);
 //if name is set, assume post new
 if (isset($_POST['name'])){
     //add to db
-    mysqli_query($con, "INSERT INTO Updates(Name,Unit,Device, State, Type, Value1, Value2) Values('$name', '$unit', '$device','$state','$type','$value1','$value2')");
+    mysqli_query($con, "INSERT INTO Devices(Name,Unit,Device, State, Type, Value1, Value2) Values('$name', '$unit', '$device','$state','$type','$value1','$value2')");
 }else{
     //Update the db
     mysqli_query($con, "UPDATE Devices SET State='$state', Value1='$value1', Value2='$value2' WHERE Device='$device' AND Unit='$uni' AND Type='$type'");

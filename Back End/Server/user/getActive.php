@@ -1,10 +1,21 @@
 <?php
+#Checks if particular unit is activelly loged in
+#
+#parameters:
+#       unit - unit num
+#returns: 
+#	1 if active, else 0
+
 header('Access-Control-Allow-Origin: *');  
 
-//get thdde info about the device
+#credentials file
+$credentialsDBFile = "../credentialsDB";
+$credentialsDB = explode("\n", file_get_contents($credentialsDBFile));
+
+//DB parameters
 $host = "localhost";
-$unDB = "deep";
-$pwDB = "siddhartha";
+$unDB = $credentialsDB[0];
+$pwDB = $credentialsDB[1];
 $DB = "Smart_Home";
 
 //get data from request

@@ -1,10 +1,22 @@
 <?php
+#Pulls out information about devices associated
+#with unit number
+#
+#parameters:
+#       unit - unit num
+#returns:
+#       a list of units, their device #, name, state,
+#	value1, and value2 sepearted by :
+
 header('Access-Control-Allow-Origin: *');  
+
+$credentialsDBFile = "../credentialsDB";
+$credentialsDB = explode("\n", file_get_contents($credentialsDBFile));
 
 //DB parameters
 $host = "localhost";
-$unDB = "deep";
-$pwDB = "siddhartha";
+$unDB = $credentialsDB[0];
+$pwDB = $credentialsDB[1];
 $DB = "Smart_Home";
 
 //get data from request

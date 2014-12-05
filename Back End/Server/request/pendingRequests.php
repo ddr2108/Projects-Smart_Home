@@ -1,10 +1,22 @@
 <?php
+#Allows for checking if there is a request pending
+#for a particular unit
+#
+#parameters:
+#	unit - unit num
+#returns:
+#	1 if pending, 0 else
+
 header('Access-Control-Allow-Origin: *');  
 
-//get thdde info about the device
+#credentials file
+$credentialsDBFile = "../credentialsDB";
+$credentialsDB = explode("\n", file_get_contents($credentialsDBFile));
+
+//DB parameters
 $host = "localhost";
-$unDB = "deep";
-$pwDB = "siddhartha";
+$unDB = $credentialsDB[0];
+$pwDB = $credentialsDB[1];
 $DB = "Smart_Home";
 
 //get data from request

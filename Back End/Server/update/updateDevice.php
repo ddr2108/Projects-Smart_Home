@@ -1,10 +1,26 @@
 <?php
+#An update to a device is requested
+#
+#parameters:
+#       unit - unit num
+#       device - device num
+#       type - device type
+#       state - state
+#       value1 - value1
+#       value2 - value2
+#returns: 
+#	1 if update successful, else 0
+
 header('Access-Control-Allow-Origin: *');  
 
-//get thdde info about the device
+#credentials file
+$credentialsDBFile = "../credentialsDB";
+$credentialsDB = explode("\n", file_get_contents($credentialsDBFile));
+
+//DB parameters
 $host = "localhost";
-$unDB = "deep";
-$pwDB = "siddhartha";
+$unDB = $credentialsDB[0];
+$pwDB = $credentialsDB[1];
 $DB = "Smart_Home";
 
 //Get info to change
