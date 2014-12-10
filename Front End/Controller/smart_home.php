@@ -20,36 +20,125 @@ $con = '';
 //initialize DB
 dbInit();
 
-//Form submit
-processDevice();
+//Intial Submit
+processInitialSetup();
 
-//initialize form
-formInit();
+//Initial setup
+$needSetup = initialSetup();
+
+if ($needSetup==0){
+	//Form submit
+	processDevice();
+
+	//initialize form
+	formInit();
+}
 //////////////////////////////////////////////////////////////
 
+/*****************************
+*initalSetup
+*performs database initialization
+*
+*parameters: none
+*returns: none
+*****************************/
 function initialSetup(){
-	gloabl $con;
+	global $con;
 
 	//check if unit number assigned
-	
-	//if not assigned create login form
+	$result = mysqli_query($con,"SELECT * FROM Unit");
+
+	//if there is a unit
+	if ($result->num_rows==0){
+		//create a form
+		createLoginForm();		
+		return 1;
+	}
 	return 0;
-	
-	return 1;
 }
 
+/*****************************
+*createLoginForm
+*create the form for logging in
+*
+*parameters: none
+*returns: none
+*****************************/
+function createLoginForm(){
+        echo "<body>";
+        echo "<form action='?init' method='post'>";
+        echo "<p>";
+        echo "Username:<br/>";
+        echo "<input name='un' type='text'/><br/><br/>";
+        echo "Password:<br/>";
+	echo "<input name='pw' type='text'/><br/><br/>";
+	echo "<input type='submit' value='Submit'/></p>";
+        echo "<p>";
+        echo "</form>";
+        echo "</body>";
+}
 
+/*****************************
+*processInitialSetup
+*process initial setup
+*
+*parameters: none
+*returns: none
+*****************************/
 function processInitialSetup(){
-	//if setup flag
+	global $con;
 
-	//send request to server
+	if (isset($_GET['init'])){
+		//new data
+		$un = $_POST['un'];
+		$pw = $_POST['pw'];
 
-	//check if valid
+		//Parameters of request
+		$url = 'http://deepdattaroy.com/other/projects/Services/SmartHome/user/getUnit.php';
+		$data =  array('un' => $un, 'pw' => $pw);
+		
+		//send request
+		$response = sendPost($url,$data);
 
-	//insert to database
+		//check if valid
+		if ($response!=0){
+			//insert to database
+		        mysqli_query($con,"INSERT INTO Unit(Unit) VALUES('$response')");
+		}
 
-	//report and tell to refresh
+		//report and tell to refrese
+		echo "Setup Complete";
+	}
 }
+
+/*****************************
+*sendPost
+*perform post request
+*
+*parameters:
+*	$url - url
+*	$params - parameters
+*returns: 
+*	resulting unit id
+****************************/
+function sendPost($url, $data){
+	//create request
+	$options = array(
+    		'http' => array(
+        	'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        	'method'  => 'POST',
+        	'content' => http_build_query($data),
+    		),
+	);
+	
+	//recv data
+	$context  = stream_context_create($options);
+	$result = file_get_contents($url, false, $context);
+
+	//returns result
+	return $result;
+}
+
 
 /*****************************
 *dbInit

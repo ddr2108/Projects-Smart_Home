@@ -21,6 +21,6 @@ var clearRequestURL = "http://deepdattaroy.com/other/projects/Services/SmartHome
 var setDeviceURL = "http://deepdattaroy.com/other/projects/Services/SmartHome/update/setDevice.php";
 var updateDeviceURL = "http://deepdattaroy.com/other/projects/Services/SmartHome/update/updateDevice.php";
 var aliveURL = "http://deepdattaroy.com/other/projects/Services/SmartHome/ping/alive.php";
-
+var getSingleURL = "http://deepdattaroy.com/other/projects/Services/SmartHome/device/getSingle.php";
 //unit number
 var unitNum = 0;

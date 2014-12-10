@@ -1,5 +1,7 @@
 import serial
 import time
+import threading
+from threading import Thread
 import MySQLdb
 
 #Packet Types
@@ -19,7 +21,7 @@ MOTION = 4
 coordID = 0
 
 #serial connection Info
-PORT = '/dev/ttyUSB0'
+PORT = '/dev/ttyUSB1'
 BAUD = 9600
 
 #packets
@@ -36,10 +38,13 @@ DB = "Smart_Home"
 curDB = ''
 db = ''
 
-####
+#ID of device
 initID = 0
-curID  = 5
-###
+curID  = 0
+
+#locking between threads
+lockPkt = threading.Lock()
+lockDB = threading.Lock()
 ######################################
 
 ####################################
@@ -56,8 +61,8 @@ def processData():
     if len(rcvPacket)<4:
 	rcvPacket = ''
 	return
-
-    #check type of packet
+    
+#check type of packet
     if ord(rcvPacket[2])==INIT:		#init packet	
 	processDevices()
     if ord(rcvPacket[2])==INFO:
@@ -75,23 +80,32 @@ def processData():
 #returns: none
 ################################
 def processDevices():
-    global initID
-
+    global initID, curID
+    
     #get the initial id
     initID = ord(rcvPacket[1])
 
-    #process devices into db
-    numDevices = len(rcvPacket)-4
-    for i in range(0,numDevices):
-	print '%d' % ord(rcvPacket[3+i])
-    
-    curDB.execute("INSERT INTO Devices(Name, State, Type, Value1, Value2, Time) VALUES('ab', '0','0', '0', '0', '0')")
-    db.commit()
+    #get the new id
+    lockDB.acquire()
+    try:
+    	command = "INSERT INTO Device_List(id) VALUES('0')"
+    	curDB.execute(command)
+    	curID = int(db.insert_id())
+
+    	#process devices into db
+    	numDevices = len(rcvPacket)-4
+    	for i in range(0,numDevices):
+		device =  ord(rcvPacket[3+i])
+   		command = "INSERT INTO Devices(Device, Name, State, Type, Value1, Value2, Time) VALUES('" + str(curID)  +  "', 'new', '0','" + str(device) + "', '0', '0', '0')"
+		curDB.execute(command)
+    	db.commit()
+    finally:
+	lockDB.release()
 
     #send packets about new id and data
     createIDDataPacket()
     time.sleep(1)
-    createAlertDataPacket()         #ask for info
+    createAlertDataPacket(curID)         #ask for info
 
     return
 
@@ -105,10 +119,16 @@ def processDevices():
 ###################################
 def processInfo():
     global rcvPacket
-    print '%d' % ord(rcvPacket[3])
-    print '%d' % ord(rcvPacket[4])
-    print '%d' % ord(rcvPacket[5])
-    print '%d' % ord(rcvPacket[6])
+
+    #take data and update db
+    command = "UPDATE Devices SET State=" + str(ord(rcvPacket[4]))  + ", Value1=" + str(ord(rcvPacket[5]))  +  ", Value2=" + str(ord(rcvPacket[6])) + ", Time=" + str(time.time())  + " WHERE Device= " + str(ord(rcvPacket[1]))  + " AND TYPE=" + str(ord(rcvPacket[3]))
+    
+    lockDB.acquire()
+    try:
+    	curDB.execute(command)
+    	db.commit()   
+    finally:
+    	lockDB.release()
     return
 
 ###################################
@@ -121,27 +141,33 @@ def processInfo():
 def createIDDataPacket():
     global sendPacket
     
-    #create packet
-    sendPacket = str(unichr(initID)) + str(unichr(coordID)) + str(unichr(ID)) + str(unichr(curID)) + '\n'
-
-    #send data
-    sendData()
+    lockPkt.acquire()
+    try:
+    	#create packet
+    	sendPacket = str(unichr(initID)) + str(unichr(coordID)) + str(unichr(ID)) + str(unichr(curID)) + '\n'
+    	#send data
+    	sendData()
+    finally:
+	lockPkt.release()
     return
 
 ###################################
 #createAlertDataPacket
 #creates a packet for requesting data
 #
-#parameters: none
+#parameters: id
 #returns: none
 ###################################
-def createAlertDataPacket():
+def createAlertDataPacket(id):
     global sendPacket
-
-    #create packet
-    sendPacket = str(unichr(curID)) + str(unichr(coordID)) + str(unichr(ALIVE)) + '\n'
-    #send data
-    sendData()
+    lockPkt.acquire()
+    try:
+    	#create packet
+    	sendPacket = str(unichr(id)) + str(unichr(coordID)) + str(unichr(ALIVE)) + '\n'
+    	#send data
+   	sendData()
+    finally:
+	lockPkt.release()
     return
 
 ################################
@@ -158,6 +184,86 @@ def sendData():
     ser.write(sendPacket)
     return
 
+################################
+#checkForUpdates
+#checks the database for updates
+#
+#parameters: none
+#returns: none
+#################################
+def checkForUpdates():
+    lockDB.acquire()
+    try:
+    	#get updates
+    	command = "SELECT * FROM Updates"
+    	curDB.execute(command)
+	
+   	#call fx to handle
+    	for x in range(0, curDB.rowcount):
+	    row = curDB.fetchone()
+	    print row
+	    if row[2]==PLUG:
+		plugUpdate(row)
+    	    #delete updates
+    	    command = "DELETE FROM Updates"
+    	    curDB.execute(command)
+    	db.commit()
+    finally:
+	lockDB.release()
+    return;
+
+################################
+#plugUpdate
+#send packet for updating
+#
+#parameters: none
+#returns: none
+#################################
+def plugUpdate(row):
+    global sendPacket;
+    
+    lockPkt.acquire()
+    try: 
+    	#create packet
+    	sendPacket = str(unichr(row[0])) + str(unichr(coordID)) + str(unichr(UPDATE)) + str(unichr(row[2])) + str(unichr(row[1])) + str(unichr(row[3])) + str(unichr(row[4])) +  '\n'
+    	#send the data
+    	sendData()
+    finally:
+	lockPkt.release()
+    return;
+
+################################
+#checkAlive
+#check for Alive packets
+#
+#parameters: none
+#returns: none
+#################################
+def checkAlive():
+    #get time
+    curTime = time.time()
+
+    lockDB.acquire()
+    try:
+        #get updates
+        command = "SELECT * FROM Devices WHERE Time<"+str(curTime-100)
+        curDB.execute(command)
+        #call fx to ask for data
+        for x in range(0, curDB.rowcount):
+            row = curDB.fetchone()
+	   # createAlertDataPacket(row[0])
+
+        #change old to objects
+       	command = "UPDATE Devices SET Time='0' WHERE Time<"+str(curTime-200)
+        curDB.execute(command)
+        db.commit()
+    finally:
+        lockDB.release()
+    
+    #sleep
+    time.sleep(0.5)
+    
+    return
 
 ################################
 #init
@@ -184,23 +290,64 @@ def init():
     return
 
 ###############################
-#loop
-#loop program is in
+#loopRcv
+#loop program is in for recv
 #
 #parameters: none
 #returns: none
 ##################################
-def loop():
+def loopRcv():
     global rcvPacket
 
    #get data and process
     while True:
 	rcvPacket = ser.readline()
-   	processData()
-
+	processData()
     return;
 
+###############################
+#loopUpdate
+#loop program is in for updates
+#
+#parameters: none
+#returns: none
+##################################
+def loopUpdate():
+    #check db for updates
+    while True:
+	checkForUpdates()
+    return
 
+###############################
+#loopAlive
+#loop program to check aliveness
+#
+#parameters: none
+#returns: none
+##################################
+def loopAlive():
+    while True:
+	checkAlive()
+    return
+
+###############################
+#loop
+#loop program is in for
+#
+#parameters: none
+#returns: none
+##################################
+def loop():
+    #call all loops
+    t1 = threading.Thread(target=loopRcv, args=[])
+    t2 = threading.Thread(target=loopUpdate, args=[])
+    t3 = threading.Thread(target=loopAlive, args=[])
+
+    #start threads
+    t1.start()
+    t2.start()
+    t3.start()
+    return;
 #######################################
 
 #initialize

@@ -115,6 +115,7 @@ function changePoweredLights(obj){
 	
 	//change the image displayed
 	changeServerLights(obj);
+
 }
 
 /********************************
@@ -152,16 +153,11 @@ function checkSucessLights(obj, response){
 function changeServerLights(obj){
 	var url;		//url for http request
 	var xmlhttp;	//for ajax request
-
-	//only do if no pending requests
-	if (obj.pending==1)
-		return;
-	obj.pending = 1;
 	
 	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
 		xmlhttp=new XMLHttpRequest();
 	}
-	
+		
 	//on finish
 	xmlhttp.onreadystatechange=function(){
 	  checkSucessLights(obj, xmlhttp);

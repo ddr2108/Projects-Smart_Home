@@ -41,7 +41,7 @@ if (mysqli_connect_errno()) {
 $result = mysqli_query($con, "INSERT INTO Updates(Unit,Device, State, Type, Value1, Value2) Values('$unit', '$device','$state','$type','$value1','$value2')");
 
 //check if database updated
-for ($i=1; $i<=100; $i++){
+for ($i=1; $i<=200; $i++){
     usleep(50000);
 
     $result = mysqli_query($con, "SELECT * FROM Devices WHERE  Unit='$unit' AND Device='$device'  AND State='$state' AND Type='$type' AND Value1='$value1' AND Value2='$value2'");

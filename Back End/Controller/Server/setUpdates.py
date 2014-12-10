@@ -100,6 +100,7 @@ def getCredentials():
 #returns: none
 ################################
 def process():
+	global prevTimestamp
 
 	#data requested
 	if request == 1:
@@ -123,7 +124,7 @@ def process():
 def processAll():
 
 	#create command
-	command = "SELECT * FROM Devices"
+	command = "SELECT * FROM Devices WHERE Time>'0'"
 	#get from db
 	curDB.execute(command)
     	db.commit()
@@ -132,7 +133,7 @@ def processAll():
 	for i in range(curDB.rowcount):
 		row = curDB.fetchone()
 		sendNew(row[0], row[1], row[2], row[3], row[4], row[5])
-
+	
 	#delete request
 	deleteRequest()
 
@@ -149,7 +150,7 @@ def sendUpdates(device, state, type, value1, value2):
 
 	#url components
 	urlPost = {'unit':unit, 'device':device, 'state':state, 'type':type, 'value1':value1, 'value2':value2}
-	
+		
 	#create the encoded post data
 	data = urllib.urlencode(urlPost)
 	
@@ -157,7 +158,7 @@ def sendUpdates(device, state, type, value1, value2):
 	request = urllib2.Request(setDeviceURL, data)
 		
 	#get the reponse
-	urllib2.urlopen(request)
+	urllib2.urlopen(request).read()
 	
 	return
 
@@ -171,7 +172,6 @@ def sendUpdates(device, state, type, value1, value2):
 def sendNew(device, name, state, type, value1, value2):
 	#url components
 	urlPost = {'unit':unit, 'device':device, 'name':name, 'state':state, 'type':type, 'value1':value1, 'value2':value2}
-	
 	#create the encoded post data
 	data = urllib.urlencode(urlPost)
 	
@@ -179,7 +179,7 @@ def sendNew(device, name, state, type, value1, value2):
 	request = urllib2.Request(setDeviceURL, data)
 		
 	#get the reponse
-	urllib2.urlopen(request)
+	urllib2.urlopen(request).read()
 
 	return
 
@@ -219,7 +219,7 @@ def processUpdates():
 	#get from db
 	curDB.execute(command)
     	db.commit()
-
+	
 	#go through results
 	for i in range(curDB.rowcount):
 		row = curDB.fetchone()

@@ -38,14 +38,13 @@ if (mysqli_connect_errno()) {
     die('Connect Error: ' . mysqli_connect_errno());
 }
 
-echo isset($_POST['name']);
 //if name is set, assume post new
 if (isset($_POST['name'])){
     //add to db
     mysqli_query($con, "INSERT INTO Devices(Name,Unit,Device, State, Type, Value1, Value2) Values('$name', '$unit', '$device','$state','$type','$value1','$value2')");
 }else{
     //Update the db
-    mysqli_query($con, "UPDATE Devices SET State='$state', Value1='$value1', Value2='$value2' WHERE Device='$device' AND Unit='$uni' AND Type='$type'");
+    mysqli_query($con, "UPDATE Devices SET State='$state', Value1='$value1', Value2='$value2' WHERE Device='$device' AND Unit='$unit' AND Type='$type'");
 }
 
 ?>

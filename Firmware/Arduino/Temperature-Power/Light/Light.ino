@@ -7,6 +7,7 @@
 //Unique id for device
 int coordID = 0;
 int deviceID = 0;
+int initID = 0;
 
 //Packet types
 #define INIT 1
@@ -31,7 +32,7 @@ String rcvPacket = "";
 
 /////////////////DEVICES//////////////////////////////////
 //Devices
-int devicesActive[] = {TEMP, PLUG};
+int devicesActive[] = {LIGHT};
 
 //Temp Sensor
 #define dht_dpin A0 
@@ -42,6 +43,11 @@ dht DHT;
 #define PLUG_PIN 13
 //State
 int plugState = 1;
+
+//P
+#define LIGHT_PIN 13
+//State
+int lightState = 0;
 ///////////////////////////////////////////////////////////
 
 /************************************
@@ -51,10 +57,7 @@ int plugState = 1;
 * parameters: none
 * returns: none
 *************************************/
-void setup(){
-  //Begin serial interface at proper baud rate
-  Serial.begin(BAUD_RATE);
-  
+void setup(){  
   //timer to send data
   Timer1.initialize(REFRESH_RATE);         // initialize timer1, and set a 1/2 second period
   Timer1.attachInterrupt(sendThread);  // attaches callback() as a timer overflow interrupt
@@ -62,7 +65,6 @@ void setup(){
   //add intial delay for setup
   delay(2000);
   deviceSetup();
-
 }
 
 /************************************
@@ -96,7 +98,10 @@ void deviceSetup(){
       }else if (devicesActive[i]==PLUG){  //plug
         pinMode(PLUG_PIN, OUTPUT);  //set up inial input
         digitalWrite(PLUG_PIN, plugState);    
-      }  
+      }else if (devicesActive[i]==LIGHT){  //plug
+        pinMode(LIGHT_PIN, OUTPUT);  //set up inial input
+        digitalWrite(LIGHT_PIN, lightState);    
+      }    
     }
 
 }
@@ -126,10 +131,13 @@ void deviceProcessing(){
 *************************************/
 void initialSetup(){
     //never given an id
-  if (deviceID==0){
+  if (initID==0 && deviceID==0){
+      //Begin serial interface at proper baud rate
+      Serial.begin(BAUD_RATE);
+
     //random number generated
-    randomSeed(analogRead(1));
-    deviceID = random(255);  //temp id
+    randomSeed(analogRead(2));
+    deviceID = random(127);  //temp id
     
     //create packet to request id
     sendPacket+=(char)coordID;  //destination coordinator
@@ -183,11 +191,14 @@ void processData(){
    if (parseMsgComp(rcvPacket.substring(1,2))==coordID){    //packet from coordinator
 
       //Types of packets
-      if (parseMsgComp(rcvPacket.substring(2,3))==ID){    //packet giving new id
+      if (parseMsgComp(rcvPacket.substring(2,3))==ID && initID==0){    //packet giving new id
          deviceID = parseMsgComp(rcvPacket.substring(3,4));
+         initID = 1;
       }
       if (parseMsgComp(rcvPacket.substring(2,3))==ALIVE){    //packet giving new id
-         createDataPacket(ALL);
+          for (int i = 0; i<sizeof(devicesActive)/sizeof(int); i++){
+             createDataPacket(devicesActive[i]);
+          }
       }
       if (parseMsgComp(rcvPacket.substring(2,3))==UPDATE){    //packet giving new id
          processUpdate();
@@ -240,10 +251,12 @@ void sendData(){
 void sendThread(){
 
   //only send if setup
-  if (deviceID!=0){
-    //create the data packet
-    createDataPacket(ALL);
-  }
+  if (initID){
+      //create the data packet
+      for (int i = 0; i<sizeof(devicesActive)/sizeof(int); i++){
+         createDataPacket(devicesActive[i]);
+      }  
+    }
 
 }
 
@@ -264,7 +277,10 @@ void createDataPacket(int device){
       createPlugDataPacket();
       sendData();
     }
-
+    if (device==LIGHT| device==ALL){
+     createLightDataPacket();
+     sendData();
+    }
 }
 
 /************************************
@@ -316,6 +332,30 @@ void createPlugDataPacket(){
 }
 
 /************************************
+* createLightDataPacket
+* Creates a data packet to send 
+*
+* parameters: none
+* returns: none
+*************************************/
+void createLightDataPacket(){
+      //create packet for data
+    //header
+    sendPacket+=(char)coordID;  //destination coordinator
+    sendPacket+=(char)deviceID; //src unknown
+    sendPacket+=(char)INFO;  //packet type
+
+    //data
+    sendPacket+=(char)LIGHT; 
+    sendPacket+=(char)lightState; 
+    sendPacket+=(char)0; 
+    sendPacket+=(char)0;     
+
+    //terminal
+    sendPacket+=(char)'\n';  //packet type 
+}
+
+/************************************
 * processUpdate
 * process an update request from controller 
 *
@@ -329,6 +369,10 @@ void processUpdate(){
   if (parseMsgComp(rcvPacket.substring(3,4))==PLUG){
     processPlugUpdate();
     createDataPacket(PLUG);
+  }
+  if (parseMsgComp(rcvPacket.substring(3,4))==LIGHT){
+    processLightUpdate();
+    createDataPacket(LIGHT);
   }
 }
 
@@ -347,5 +391,18 @@ void processPlugUpdate(){
   digitalWrite(PLUG_PIN, plugState);  
 }
 
-
+/************************************
+* processLightUpdate
+* updates light state 
+*
+* parameters: none
+* returns: none
+*************************************/
+void processLightUpdate(){
+  //change plug state
+  lightState = parseMsgComp(rcvPacket.substring(4,5));
+  
+  //update device
+  digitalWrite(LIGHT_PIN, lightState);  
+}
 
