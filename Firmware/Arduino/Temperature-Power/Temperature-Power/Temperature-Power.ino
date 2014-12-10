@@ -1,5 +1,6 @@
 #include "TimerOne.h"
 #include <dht.h>
+#include <EEPROM.h>
 
 //Serial setup
 #define BAUD_RATE  9600
@@ -32,7 +33,7 @@ String rcvPacket = "";
 
 /////////////////DEVICES//////////////////////////////////
 //Devices
-int devicesActive[] = {PLUG};
+int devicesActive[] = {TEMP, PLUG};
 
 //Temp Sensor
 #define dht_dpin A0 
@@ -98,7 +99,14 @@ void deviceSetup(){
       }else if (devicesActive[i]==PLUG){  //plug
         pinMode(PLUG_PIN, OUTPUT);  //set up inial input
         digitalWrite(PLUG_PIN, plugState);    
-      }  
+      } else if (devicesActive[i]==LIGHT){  //plug
+        pinMode(LIGHT_PIN, OUTPUT);  //set up inial input
+        if (lightState == 1){
+          digitalWrite(LIGHT_PIN, LOW);
+        }else{
+           digitalWrite(LIGHT_PIN, HIGH);
+        }    
+      }     
     }
 
 }
@@ -131,7 +139,17 @@ void initialSetup(){
   if (initID==0 && deviceID==0){
       //Begin serial interface at proper baud rate
       Serial.begin(BAUD_RATE);
-
+    
+    //read eerom and see if device id exists
+    int  value = EEPROM.read(1);
+    if (value!=255){
+       deviceID = (char)value;
+       EEPROM.write(1, value);
+       initID = 1;
+       sendThread();
+       return; 
+    }
+    
     //random number generated
     randomSeed(analogRead(2));
     deviceID = random(127);  //temp id
@@ -190,8 +208,9 @@ void processData(){
       //Types of packets
       if (parseMsgComp(rcvPacket.substring(2,3))==ID && initID==0){    //packet giving new id
          deviceID = parseMsgComp(rcvPacket.substring(3,4));
+         EEPROM.write(1, deviceID);
          initID = 1;
-      }
+       }
       if (parseMsgComp(rcvPacket.substring(2,3))==ALIVE){    //packet giving new id
           for (int i = 0; i<sizeof(devicesActive)/sizeof(int); i++){
              createDataPacket(devicesActive[i]);
@@ -400,6 +419,10 @@ void processLightUpdate(){
   lightState = parseMsgComp(rcvPacket.substring(4,5));
   
   //update device
-  digitalWrite(LIGHT_PIN, lightState);  
+  if (lightState == 1){
+    digitalWrite(LIGHT_PIN, HIGH);
+  }else{
+     digitalWrite(LIGHT_PIN, LOW);
+  }  
 }
 

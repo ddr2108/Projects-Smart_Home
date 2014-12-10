@@ -1,5 +1,6 @@
 #include "TimerOne.h"
 #include <dht.h>
+#include <EEPROM.h>
 
 //Serial setup
 #define BAUD_RATE  9600
@@ -47,7 +48,7 @@ int plugState = 1;
 //P
 #define LIGHT_PIN 13
 //State
-int lightState = 0;
+int lightState = 1;
 ///////////////////////////////////////////////////////////
 
 /************************************
@@ -98,10 +99,14 @@ void deviceSetup(){
       }else if (devicesActive[i]==PLUG){  //plug
         pinMode(PLUG_PIN, OUTPUT);  //set up inial input
         digitalWrite(PLUG_PIN, plugState);    
-      }else if (devicesActive[i]==LIGHT){  //plug
+      } else if (devicesActive[i]==LIGHT){  //plug
         pinMode(LIGHT_PIN, OUTPUT);  //set up inial input
-        digitalWrite(LIGHT_PIN, lightState);    
-      }    
+        if (lightState == 1){
+          digitalWrite(LIGHT_PIN, LOW);
+        }else{
+           digitalWrite(LIGHT_PIN, HIGH);
+        }        
+      }     
     }
 
 }
@@ -135,9 +140,19 @@ void initialSetup(){
       //Begin serial interface at proper baud rate
       Serial.begin(BAUD_RATE);
 
+    //read eerom and see if device id exists
+    int  value = EEPROM.read(1);
+    if (value!=255){
+       deviceID = (char)value;
+       EEPROM.write(1, value);
+       initID = 1;
+       sendThread();
+       return; 
+    }
+
     //random number generated
     randomSeed(analogRead(2));
-    deviceID = random(127);  //temp id
+    deviceID = random(255);  //temp id
     
     //create packet to request id
     sendPacket+=(char)coordID;  //destination coordinator
@@ -193,6 +208,7 @@ void processData(){
       //Types of packets
       if (parseMsgComp(rcvPacket.substring(2,3))==ID && initID==0){    //packet giving new id
          deviceID = parseMsgComp(rcvPacket.substring(3,4));
+         EEPROM.write(1, deviceID);
          initID = 1;
       }
       if (parseMsgComp(rcvPacket.substring(2,3))==ALIVE){    //packet giving new id
@@ -403,6 +419,11 @@ void processLightUpdate(){
   lightState = parseMsgComp(rcvPacket.substring(4,5));
   
   //update device
-  digitalWrite(LIGHT_PIN, lightState);  
+  //update device
+  if (lightState == 1){
+    digitalWrite(LIGHT_PIN, LOW);
+  }else{
+     digitalWrite(LIGHT_PIN, HIGH);
+  }  
 }
 
