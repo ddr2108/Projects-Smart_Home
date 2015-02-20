@@ -33,7 +33,7 @@ String rcvPacket = "";
 
 /////////////////DEVICES//////////////////////////////////
 //Devices
-int devicesActive[] = {TEMP, PLUG};
+int devicesActive[] = {TEMP};
 
 //Temp Sensor
 #define dht_dpin A0 
@@ -166,6 +166,7 @@ void initialSetup(){
     
     //termionating
     sendPacket+=(char)'\n';  //packet type 
+    digitalWrite(13, 1);
     
     //send the data
     sendData();

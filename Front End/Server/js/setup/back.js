@@ -36,17 +36,17 @@ function setUpImageBack(obj){
 	div.id = obj.id;
 	document.body.appendChild(div);
 
-	//add image for this light
-	obj.image.src = imageBack;
-	obj.image.id = "image";
-	obj.image.onclick = function(){goHome(obj);};
-	document.getElementById(obj.id).appendChild(obj.image);
-	
 	//add title to image
 	var p = document.createElement("p");
 	p.innerHTML = obj.name;
 	p.id = "title";
 	document.getElementById(obj.id).appendChild(p);
+	
+	//add image for this light
+	obj.image.src = imageBack;
+	obj.image.id = "image";
+	obj.image.onclick = function(){goHome(obj);};
+	document.getElementById(obj.id).appendChild(obj.image);
 }
 
 /********************************

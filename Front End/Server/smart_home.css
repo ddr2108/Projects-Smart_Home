@@ -1,0 +1,38 @@
+/*main body*/
+body {
+    background-color: white;
+}
+
+/*information written down*/
+#info {
+	color: red;
+	font-size: 150%;
+	margin-top: 75px;
+	vertical-align: middle;
+}
+
+/*titles of things*/
+#title {
+	color: black;
+	font-size: 150%;
+	float:left;
+}
+
+/*iamges of the objects*/
+#image {
+	height: 200px;
+}
+
+/*div containing all sensor stuff*/
+Div.sensor {
+	height: 250px;
+	vertical-align: middle;
+	display: table-cell;
+}
+
+/*div containing all controller stuff*/
+Div.controller {
+	height: 250px;
+	vertical-align: middle;
+	display: table-cell;
+}

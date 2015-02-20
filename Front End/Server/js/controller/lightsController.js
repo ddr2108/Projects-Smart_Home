@@ -38,18 +38,21 @@ function lightsController(device, name, state, value1, value2){
 function setUpImageLightsController(obj){
 	//create a div to hold image
 	var div = document.createElement("div");
-	div.id = obj.id;
+	div.class = "controller";
+	div.id = LIGHT;
 	document.body.appendChild(div);
 
 	//add image for this light
 	obj.image.src = imagesLights[true];
 	obj.image.onclick = function(){setUpLights(obj);};
-	document.getElementById(obj.id).appendChild(obj.image);
+	obj.image.id = "image";
+	document.getElementById(LIGHT).appendChild(obj.image);
 	
 	//add title to image
 	var p = document.createElement("p");
 	p.innerHTML = nameLightsController;
-	document.getElementById(obj.id).appendChild(p);
+	p.id = "title";
+	document.getElementById(LIGHT).appendChild(p);
 }
 
 /********************************

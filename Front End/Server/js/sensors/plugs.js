@@ -58,8 +58,15 @@ function preloadPlugs(obj){
 function setUpImagePlugs(obj){
 	//create a div to hold image
 	var div = document.createElement("div");
+	div.className = "sensor";
 	div.id = obj.device;
 	document.body.appendChild(div);
+	
+	//add title to image
+	var p = document.createElement("p");
+	p.innerHTML = obj.name;
+	p.id = "title";
+	document.getElementById(obj.device).appendChild(p);
 
 	//add image for this plug
 	obj.image.src = imagesPlugs[obj.state];
@@ -67,11 +74,9 @@ function setUpImagePlugs(obj){
 	obj.image.onclick = function(){changePoweredPlugs(obj);};
 	document.getElementById(obj.device).appendChild(obj.image);
 	
-	//add title to image
-	var p = document.createElement("p");
-	p.innerHTML = obj.name;
-	p.id = "title";
-	document.getElementById(obj.device).appendChild(p);
+	var hr = document.createElement("hr");
+	document.getElementById(obj.device).appendChild(hr);
+
 }
 
 /********************************

@@ -39,18 +39,21 @@ function setUpImageTempsController(obj){
 
 	//create a div to hold image
 	var div = document.createElement("div");
-	div.id = obj.id;
+	div.class = "controller";
+	div.id = TEMP;
 	document.body.appendChild(div);
 
 	//add image for this light
 	obj.image.src = imagesTemps;
 	obj.image.onclick = function(){setUpTemps(obj);};
-	document.getElementById(obj.id).appendChild(obj.image);
+	obj.image.id = "image";
+	document.getElementById(TEMP).appendChild(obj.image);
 	
 	//add title to image
 	var p = document.createElement("p");
 	p.innerHTML = nameTempsController;
-	document.getElementById(obj.id).appendChild(p);
+	p.id = "title";
+	document.getElementById(TEMP).appendChild(p);
 }
 
 /********************************

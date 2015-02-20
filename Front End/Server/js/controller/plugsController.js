@@ -39,18 +39,21 @@ function setUpImagePlugsController(obj){
 
 	//create a div to hold image
 	var div = document.createElement("div");
-	div.id = obj.id;
+	div.class = "controller";
+	div.id = PLUG;
 	document.body.appendChild(div);
 
 	//add image for this light
 	obj.image.src = imagesPlugs[true];
 	obj.image.onclick = function(){setUpPlugs(obj);};
-	document.getElementById(obj.id).appendChild(obj.image);
+	obj.image.id = "image";
+	document.getElementById(PLUG).appendChild(obj.image);
 	
 	//add title to image
 	var p = document.createElement("p");
 	p.innerHTML = namePlugsController;
-	document.getElementById(obj.id).appendChild(p);
+	p.id = "title";
+	document.getElementById(PLUG).appendChild(p);
 }
 
 /********************************

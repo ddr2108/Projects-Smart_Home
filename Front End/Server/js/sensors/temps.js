@@ -37,9 +37,16 @@ function setUpTempsInfo(obj){
 
 	//create a div to hold image
 	var div = document.createElement("div");
+	div.className = "sensor";
 	div.id = obj.device;
 	document.body.appendChild(div);
 
+	//add title to image
+	var p = document.createElement("p");
+	p.innerHTML = obj.name;
+	p.id = "title";
+	document.getElementById(obj.device).appendChild(p);
+	
 	//add temp to image
 	var p = document.createElement("p");
 	p.innerHTML = obj.value1.concat('F');
@@ -52,11 +59,8 @@ function setUpTempsInfo(obj){
 	p.id = "info";
 	document.getElementById(obj.device).appendChild(p);
 
-	//add title to image
-	var p = document.createElement("p");
-	p.innerHTML = obj.name;
-	p.id = "title";
-	document.getElementById(obj.device).appendChild(p);
+	var hr = document.createElement("hr");
+	document.getElementById(obj.device).appendChild(hr);
 
 	//check for temp
 	changeServerTemps(obj);

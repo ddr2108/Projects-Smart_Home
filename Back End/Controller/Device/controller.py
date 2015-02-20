@@ -21,7 +21,7 @@ MOTION = 4
 coordID = 0
 
 #serial connection Info
-PORT = '/dev/ttyUSB1'
+PORT = '/dev/ttyUSB2'
 BAUD = 9600
 
 #packets
@@ -61,8 +61,8 @@ def processData():
     if len(rcvPacket)<4:
 	rcvPacket = ''
 	return
-    
-#check type of packet
+
+    #check type of packet
     if ord(rcvPacket[2])==INIT:		#init packet	
 	processDevices()
     if ord(rcvPacket[2])==INFO:
@@ -144,7 +144,7 @@ def createIDDataPacket():
     lockPkt.acquire()
     try:
     	#create packet
-    	sendPacket = str(unichr(initID)) + str(unichr(coordID)) + str(unichr(ID)) + str(unichr(curID)) + '\n'
+    	sendPacket = str(chr(initID)) + str(chr(coordID)) + str(chr(ID)) + str(chr(curID)) + '\n'
     	#send data
     	sendData()
     finally:
@@ -163,7 +163,7 @@ def createAlertDataPacket(id):
     lockPkt.acquire()
     try:
     	#create packet
-    	sendPacket = str(unichr(id)) + str(unichr(coordID)) + str(unichr(ALIVE)) + '\n'
+    	sendPacket = str(chr(id)) + str(chr(coordID)) + str(chr(ALIVE)) + '\n'
     	#send data
    	sendData()
     finally:
@@ -197,14 +197,13 @@ def checkForUpdates():
     	#get updates
     	command = "SELECT * FROM Updates"
     	curDB.execute(command)
-	
+
    	#call fx to handle
     	for x in range(0, curDB.rowcount):
 	    row = curDB.fetchone()
-	    print row
-	    if row[2]==PLUG:
-		plugUpdate(row)
-    	    #delete updates
+	    devUpdate(row)
+    	    
+	    #delete updates
     	    command = "DELETE FROM Updates"
     	    curDB.execute(command)
     	db.commit()
@@ -213,19 +212,19 @@ def checkForUpdates():
     return;
 
 ################################
-#plugUpdate
+#devUpdate
 #send packet for updating
 #
 #parameters: none
 #returns: none
 #################################
-def plugUpdate(row):
+def devUpdate(row):
     global sendPacket;
     
     lockPkt.acquire()
     try: 
     	#create packet
-    	sendPacket = str(unichr(row[0])) + str(unichr(coordID)) + str(unichr(UPDATE)) + str(unichr(row[2])) + str(unichr(row[1])) + str(unichr(row[3])) + str(unichr(row[4])) +  '\n'
+    	sendPacket = str(chr(row[0])) + str(chr(coordID)) + str(chr(UPDATE)) + str(chr(row[2])) + str(chr(row[1])) + str(chr(row[3])) + str(chr(row[4])) +  '\n'
     	#send the data
     	sendData()
     finally:
