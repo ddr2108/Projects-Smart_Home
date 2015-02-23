@@ -57,7 +57,8 @@ def loop():
 	#infintite loop of checking for udpates
 	while True:
 		response = checkUpdates()
-		processUpdates(response)
+		if (response is not None and len(response)>=5):
+		    processUpdates(response)
 	return;
 
 #################################
@@ -96,8 +97,11 @@ def checkUpdates():
 	request = urllib2.Request(pendingUpdatesURL, data)
 
 	#get the reponse
-	response = urllib2.urlopen(request).read()
-	
+	try:
+		response = urllib2.urlopen(request).read()
+	except:
+		return
+
 	#return reponse split by delimiter
 	return response.split(':')
 
@@ -112,11 +116,26 @@ def checkUpdates():
 def processUpdates(updates):
 	#go through received data
 	for i in range(0, len(updates)-1,5):
+		#check if there is enough data
+		if (len(updates)-i)<5:
+			return	
+
 		#create command
-		command = "INSERT INTO Updates(Device, State, Type, Value1, Value2) VALUES('"+updates[0]+"','"+updates[1]+"','"+updates[2]+"','"+updates[3]+"','"+updates[4]+"')"
+		command = "INSERT INTO Updates(Device, State, Type, Value1, Value2) VALUES('"+updates[0+i]+"','"+updates[1+i]+"','"+updates[2+i]+"','"+updates[3+i]+"','"+updates[4+i]+"')"
+		
 		#insert into db
-		curDB.execute(command)
-	    	db.commit()	
+		try:
+			curDB.execute(command)
+	    	except:	
+    			db = MySQLdb.connect(host=HOST,
+				user=USER,
+				passwd=PW,
+				db=DB) 
+    			curDB = db.cursor()
+			curDB.execute(command)
+		
+		db.commit()	
+		print command
 	return
 
 #perform initialization

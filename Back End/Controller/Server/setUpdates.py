@@ -109,7 +109,7 @@ def process():
 	#user active
 	elif active==1:
  		processUpdates()
-		prevTimestamp = time.time()
+		prevTimestamp = time.time() - 1
 
 	return
 
@@ -126,8 +126,16 @@ def processAll():
 	#create command
 	command = "SELECT * FROM Devices WHERE Time>'0'"
 	#get from db
-	curDB.execute(command)
-    	db.commit()
+        try:
+        	curDB.execute(command)
+        except:
+        	db = MySQLdb.connect(host=HOST,
+                     user=USER,
+                     passwd=PW,
+                     db=DB)
+           	curDB = db.cursor()
+      	        curDB.execute(command) 
+   	db.commit()
 
 	#go through results
 	for i in range(curDB.rowcount):
@@ -158,7 +166,11 @@ def sendUpdates(device, state, type, value1, value2):
 	request = urllib2.Request(setDeviceURL, data)
 		
 	#get the reponse
-	urllib2.urlopen(request).read()
+	try:
+		urllib2.urlopen(request).read()
+        except:
+                return
+
 	
 	return
 
@@ -179,7 +191,10 @@ def sendNew(device, name, state, type, value1, value2):
 	request = urllib2.Request(setDeviceURL, data)
 		
 	#get the reponse
-	urllib2.urlopen(request).read()
+	try:
+		urllib2.urlopen(request).read()
+        except:
+                return
 
 	return
 
@@ -201,7 +216,11 @@ def deleteRequest():
 	request = urllib2.Request(clearRequestURL, data)
 		
 	#get the reponse
-	response = urllib2.urlopen(request).read()
+	try:
+		response = urllib2.urlopen(request).read()
+	except:
+                return
+
 	
 	return
 
@@ -217,8 +236,16 @@ def processUpdates():
 	#create command
 	command = "SELECT * FROM Devices WHERE Time>" + str(prevTimestamp)
 	#get from db
-	curDB.execute(command)
-    	db.commit()
+	try:
+                curDB.execute(command)
+        except:
+                db = MySQLdb.connect(host=HOST,
+                     user=USER,
+                     passwd=PW,
+                     db=DB)
+                curDB = db.cursor()
+                curDB.execute(command)     
+	db.commit()
 	
 	#go through results
 	for i in range(curDB.rowcount):
@@ -248,10 +275,17 @@ def checkActive():
 	request = urllib2.Request(getActiveURL, data)
 
 	#get the reponse
-	response = urllib2.urlopen(request).read()
+	try:
+		response = urllib2.urlopen(request).read()
+        except:
+                return
+
 	
-	#return reponse 
-	active = int(response)
+	#return reponse
+	try: 
+	    active = int(response)
+	except:
+	    return;
 	return;
 
 
@@ -275,10 +309,16 @@ def checkRequest():
 	request = urllib2.Request(pendingRequestsURL, data)
 
 	#get the reponse
-	response = urllib2.urlopen(request).read()
-	
+	try:
+		response = urllib2.urlopen(request).read()	
+        except:
+                return
+
 	#return reponse 
-	request = int(response)
+	try:
+	    request = int(response)
+	except:
+	    return
 	return;
 
 

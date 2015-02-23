@@ -21,7 +21,7 @@ MOTION = 4
 coordID = 0
 
 #serial connection Info
-PORT = '/dev/ttyUSB2'
+PORT = '/dev/ttyUSB0'
 BAUD = 9600
 
 #packets
@@ -56,7 +56,6 @@ lockDB = threading.Lock()
 ####################################
 def processData():
     global rcvPacket
-
     #check for length of packet
     if len(rcvPacket)<4:
 	rcvPacket = ''
@@ -67,7 +66,6 @@ def processData():
 	processDevices()
     if ord(rcvPacket[2])==INFO:
 	processInfo()
-
     rcvPacket = ''	#clear buffer
     return
 
@@ -196,16 +194,17 @@ def checkForUpdates():
     try:
     	#get updates
     	command = "SELECT * FROM Updates"
-    	curDB.execute(command)
-
-   	#call fx to handle
+    	a= curDB.execute(command)
+   	
+	#call fx to handle
     	for x in range(0, curDB.rowcount):
 	    row = curDB.fetchone()
-	    devUpdate(row)
+	    if (row is not None):
+	        devUpdate(row)
     	    
-	    #delete updates
-    	    command = "DELETE FROM Updates"
-    	    curDB.execute(command)
+	#delete updates
+    	command = "DELETE FROM Updates"
+    	curDB.execute(command)
     	db.commit()
     finally:
 	lockDB.release()

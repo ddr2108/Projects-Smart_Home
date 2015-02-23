@@ -353,11 +353,16 @@ function processLight(){
         //complete query
         $resultInfo = mysqli_query($con,"UPDATE Devices SET Name='$name' WHERE Device='$device' AND Type='$LIGHT'");
 
+	if ($name=="NA"){
+		$resultInfo = mysqli_query($con,"DELETE FROM Devices  WHERE Device='$device' AND Type='$LIGHT'");
+		return 1;	
+	}
+
         //Set to update
         $state = $_POST['state'];
         $value1 = $_POST['value1'];
         $value2 = $_POST['value2'];
-        mysqli_query($con, "INSERT INTO Updates(Device, State, Type, Value1, Value2) Values('$device','$state','$PLUG','$value1','$value2')");
+        mysqli_query($con, "INSERT INTO Updates(Device, State, Type, Value1, Value2) Values('$device','$state','$LIGHT','$value1','$value2')");
 }
 
 /*****************************
@@ -377,6 +382,11 @@ function processPlug(){
         $name = $_POST['name'];
         //complete query
         $resultInfo = mysqli_query($con,"UPDATE Devices SET Name='$name' WHERE Device='$device' AND Type='$PLUG'");
+
+	if ($name=="NA"){
+		$resultInfo = mysqli_query($con,"DELETE FROM Devices  WHERE Device='$device' AND Type='$PLUG'");
+		return 1;	
+	}
 
 	//Set to update 
 	$state = $_POST['state'];
@@ -402,6 +412,11 @@ function processTemp(){
 	$name = $_POST['name'];
 	//complete query 
 	$resultInfo = mysqli_query($con,"UPDATE Devices SET Name='$name' WHERE Device='$device' AND Type='$TEMP'");
-}
 
+
+	if ($name=="NA"){
+		$resultInfo = mysqli_query($con,"DELETE FROM Devices  WHERE Device='$device' AND Type='$TEMP'");
+		return 1;	
+	}
+}
 ?>
